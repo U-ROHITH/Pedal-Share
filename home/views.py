@@ -3,8 +3,11 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 from decimal import Decimal, InvalidOperation
 from datetime import time
+import re
 
 from .models import UserProfile, Cycle, Booking, Transaction
 
@@ -169,16 +172,47 @@ def signup(request):
         password  = request.POST.get('password', '')
         confirm   = request.POST.get('confirm_password', '')
 
+        # ── Validation ────────────────────────────────────────────────
+        error = None
+
+        # Full name: letters and spaces only, at least two characters, needs first+last
         if not full_name:
-            messages.error(request, 'Full name is required.')
+            error = 'Full name is required.'
+        elif not re.match(r'^[A-Za-z\s]{2,100}$', full_name):
+            error = 'Full name must contain letters only (no numbers or symbols).'
+        elif len(full_name.split()) < 2:
+            error = 'Please enter your first and last name.'
+
+        # Email: format check via Django validator
         elif not email:
-            messages.error(request, 'Email is required.')
-        elif password != confirm:
-            messages.error(request, 'Passwords do not match.')
-        elif len(password) < 8:
-            messages.error(request, 'Password must be at least 8 characters.')
-        elif User.objects.filter(username=email).exists():
-            messages.error(request, 'An account with this email already exists.')
+            error = 'Email address is required.'
+        else:
+            try:
+                validate_email(email)
+            except ValidationError:
+                error = 'Enter a valid email address (e.g. name@example.com).'
+
+        # Phone: optional — if provided must be a valid 10-digit Indian mobile number
+        if not error and phone:
+            digits = re.sub(r'[\s\-\(\)\+]', '', phone)
+            if digits.startswith('91') and len(digits) == 12:
+                digits = digits[2:]
+            if not re.match(r'^[6-9]\d{9}$', digits):
+                error = 'Enter a valid 10-digit Indian mobile number (e.g. 98765 43210).'
+
+        if not error and password != confirm:
+            error = 'Passwords do not match.'
+        elif not error and len(password) < 8:
+            error = 'Password must be at least 8 characters.'
+        elif not error and not re.search(r'[A-Z]', password):
+            error = 'Password must contain at least one uppercase letter.'
+        elif not error and not re.search(r'[0-9]', password):
+            error = 'Password must contain at least one number.'
+        elif not error and User.objects.filter(username=email).exists():
+            error = 'An account with this email already exists.'
+
+        if error:
+            messages.error(request, error)
         else:
             parts = full_name.split(' ', 1)
             user = User.objects.create_user(

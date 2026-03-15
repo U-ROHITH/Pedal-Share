@@ -331,31 +331,38 @@
           <label for="full_name">Full Name</label>
           <div class="field-icon-wrap">
             <i class="fas fa-user f-icon"></i>
-            <input type="text" id="full_name" name="full_name" placeholder="Your full name" required autocomplete="name">
+            <input type="text" id="full_name" name="full_name" placeholder="First and last name"
+                   required autocomplete="name" oninput="validateName(this)">
           </div>
+          <div class="field-hint" id="name-hint"></div>
         </div>
 
         <div class="field-group">
           <label for="email">Email Address</label>
           <div class="field-icon-wrap">
             <i class="fas fa-envelope f-icon"></i>
-            <input type="email" id="email" name="email" placeholder="you@example.com" required autocomplete="email">
+            <input type="email" id="email" name="email" placeholder="you@example.com"
+                   required autocomplete="email" oninput="validateEmail(this)">
           </div>
+          <div class="field-hint" id="email-hint"></div>
         </div>
 
         <div class="field-group">
           <label for="phone">Phone Number <span style="font-weight:400;color:#bdc3c7;">(optional)</span></label>
           <div class="field-icon-wrap">
             <i class="fas fa-phone f-icon"></i>
-            <input type="tel" id="phone" name="phone" placeholder="+91 98765 43210" autocomplete="tel">
+            <input type="tel" id="phone" name="phone" placeholder="98765 43210"
+                   autocomplete="tel" maxlength="10" oninput="validatePhone(this)">
           </div>
+          <div class="field-hint" id="phone-hint"></div>
         </div>
 
         <div class="field-group">
           <label for="password">Password</label>
           <div class="field-icon-wrap">
             <i class="fas fa-lock f-icon"></i>
-            <input type="password" id="password" name="password" placeholder="Min. 8 characters" required oninput="checkStrength(this.value)" autocomplete="new-password">
+            <input type="password" id="password" name="password" placeholder="Min. 8 chars, 1 uppercase, 1 number"
+                   required oninput="checkStrength(this.value); checkConfirm()" autocomplete="new-password">
             <i class="fas fa-eye eye-toggle" id="togglePwd" onclick="togglePassword('password','togglePwd')"></i>
           </div>
           <div class="strength-bar">
@@ -368,12 +375,14 @@
           <label for="confirm_password">Confirm Password</label>
           <div class="field-icon-wrap">
             <i class="fas fa-lock f-icon"></i>
-            <input type="password" id="confirm_password" name="confirm_password" placeholder="Repeat your password" required autocomplete="new-password">
+            <input type="password" id="confirm_password" name="confirm_password"
+                   placeholder="Repeat your password" required oninput="checkConfirm()" autocomplete="new-password">
             <i class="fas fa-eye eye-toggle" id="toggleConfirm" onclick="togglePassword('confirm_password','toggleConfirm')"></i>
           </div>
+          <div class="field-hint" id="confirm-hint"></div>
         </div>
 
-        <button type="submit" class="submit-btn">
+        <button type="submit" class="submit-btn" id="submitBtn">
           <i class="fas fa-user-plus" style="margin-right:8px;"></i>Create Account &amp; Get ₹500
         </button>
       </form>
@@ -392,6 +401,50 @@
     input.type  = input.type === 'password' ? 'text' : 'password';
     icon.classList.toggle('fa-eye');
     icon.classList.toggle('fa-eye-slash');
+  }
+
+  function setHint(id, msg, ok) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = msg;
+    el.style.fontSize = '0.75rem';
+    el.style.marginTop = '4px';
+    el.style.color = ok ? '#1ABC9C' : '#e74c3c';
+  }
+
+  function validateName(input) {
+    const val = input.value.trim();
+    if (!val) { setHint('name-hint', '', true); return; }
+    if (!/^[A-Za-z\s]{2,100}$/.test(val)) {
+      setHint('name-hint', 'Letters and spaces only — no numbers or symbols.', false);
+    } else if (val.split(/\s+/).filter(Boolean).length < 2) {
+      setHint('name-hint', 'Please enter both first and last name.', false);
+    } else {
+      setHint('name-hint', '✓ Looks good', true);
+    }
+  }
+
+  function validateEmail(input) {
+    const val = input.value.trim();
+    if (!val) { setHint('email-hint', '', true); return; }
+    const ok = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(val);
+    setHint('email-hint', ok ? '✓ Valid email' : 'Enter a valid email address (e.g. name@example.com).', ok);
+  }
+
+  function validatePhone(input) {
+    const val = input.value.trim();
+    if (!val) { setHint('phone-hint', '', true); return; }
+    const digits = val.replace(/[\s\-\(\)\+]/g, '');
+    const ok = /^[6-9]\d{9}$/.test(digits);
+    setHint('phone-hint', ok ? '✓ Valid number' : 'Enter a valid 10-digit Indian mobile number starting with 6–9.', ok);
+  }
+
+  function checkConfirm() {
+    const pwd = document.getElementById('password').value;
+    const conf = document.getElementById('confirm_password').value;
+    if (!conf) { setHint('confirm-hint', '', true); return; }
+    const ok = pwd === conf;
+    setHint('confirm-hint', ok ? '✓ Passwords match' : 'Passwords do not match.', ok);
   }
 
   function checkStrength(val) {
