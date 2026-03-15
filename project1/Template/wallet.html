@@ -1,0 +1,205 @@
+
+
+{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallet Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            margin: 0;
+            background-color: #f8f9fa;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: 200px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-right: 1px solid #ddd;
+        }
+
+        .sidebar h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 10px;
+            color: #333;
+            text-decoration: none;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background-color: #e0e4f5;
+            color: #4a4aff;
+            font-weight: bold;
+        }
+
+        /* Main Content Styling */
+        .main-content {
+            flex-grow: 1;
+            padding: 30px;
+        }
+
+        .wallet-balance {
+            background-color: #4a4aff;
+            color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .wallet-balance h3 {
+            font-size: 20px;
+            margin: 0;
+        }
+
+        .wallet-balance h1 {
+            font-size: 36px;
+            margin: 10px 0 0;
+        }
+
+        .wallet-actions {
+            display: flex;
+            justify-content: space-around;
+            background-color: #f0f4ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .wallet-action {
+            text-align: center;
+            padding: 10px;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .wallet-action:hover {
+            background-color: #e0e4f5;
+        }
+
+        .wallet-action i {
+            font-size: 24px;
+            color: #4a4aff;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .wallet-action p {
+            margin: 0;
+            font-size: 14px;
+            color: #333;
+        }
+
+        /* Input and Button Styling */
+        .amount-input {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+
+        .amount-input label {
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .amount-input input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .proceed-btn {
+            background-color: #4a4aff;
+            color: #ffffff;
+            padding: 10px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .proceed-btn:hover {
+            background-color: #3333cc;
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>My account</h2>
+    <a href="#" class="active">Dashboard</a>
+    <a href="#">Previous Bookings</a>
+    <a href="#">Wallet</a>
+    <a href="#">Logout</a>
+</div>
+
+<div class="main-content">
+    <div class="wallet-balance">
+        <h3>Wallet Balance</h3>
+        <h1>$0.00</h1>
+        <a href="#" style="color: #ffffff; text-decoration: underline;">View Transactions</a>
+    </div>
+
+    <div class="wallet-actions">
+        <div class="wallet-action">
+            <i class="fas fa-plus-circle"></i>
+            <p>Add Balance</p>
+        </div>
+        <div class="wallet-action">
+            <i class="fas fa-exchange-alt"></i>
+            <p>Wallet Transfer</p>
+        </div>
+        <div class="wallet-action">
+            <i class="fas fa-file-invoice-dollar"></i>
+            <p>Wallet Withdrawal Request</p>
+        </div>
+        <div class="wallet-action">
+            <i class="fas fa-ticket-alt"></i>
+            <p>Wallet Coupon Redeem</p>
+        </div>
+    </div>
+
+    <div class="amount-input">
+        <label for="amount">Enter Amount ($):</label>
+        <input type="number" id="amount" placeholder="Enter amount" min="0" oninput="validity.valid||(value='');">
+    </div>
+
+    <a href = "PaymentGateway.html"><button class="proceed-btn">Proceed</button></a>
+</div>
+
+<!-- Font Awesome Icons -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+<script>
+    document.querySelector('.proceed-btn').addEventListener('click', function() {
+        const amount = document.getElementById('amount').value;
+        if (amount) {
+    alert(`You have entered: $${amount}`);
+} else {
+    alert('Please enter an amount.');
+}
+
+    });
+</script>
+
+</body>
+</html>
+{%endblock body %}

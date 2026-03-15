@@ -1,0 +1,159 @@
+{%  extends "base.html" %}
+
+{% block body %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #34495E; /* Updated background color */
+            color: #ffffff;
+        }
+
+        .contact-section {
+            padding: 50px;
+            text-align: center;
+        }
+
+        .contact-heading {
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: #ECF0F1; /* Lightened heading text */
+        }
+
+        .contact-text {
+            font-size: 16px;
+            margin-bottom: 40px;
+            color: #BDC3C7; /* Lightened paragraph text */
+        }
+
+        .contact-info {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 40px;
+        }
+
+        .contact-item {
+            text-align: center;
+            margin: 0 20px;
+        }
+
+        .contact-item i {
+            font-size: 36px;
+            margin-bottom: 10px;
+            color: #1ABC9C; /* Accent color for icons */
+        }
+
+        .contact-label {
+            font-weight: bold;
+            color: #ECF0F1; /* Lightened label text */
+        }
+
+        .contact-detail {
+            font-size: 16px;
+            color: #BDC3C7; /* Lightened detail text */
+        }
+
+        .message-form {
+            background-color: #2C3E50; /* Darkened form background */
+            padding: 40px;
+            border-radius: 10px;
+        }
+
+        .message-form form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .message-form input,
+        .message-form textarea {
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            background-color: #34495E; /* Input background */
+            color: #ffffff;
+        }
+
+        .message-form button {
+            background-color: #1ABC9C; /* Accent color for button */
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <section class="contact-section">
+        <h2 class="contact-heading">Contact Us</h2>
+        <p class="contact-text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+
+        <div class="contact-info">
+            <div class="contact-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <p class="contact-label">Address</p>
+                <p class="contact-detail">4671 Sugar Camp Road, Owatonna, Minnesota, 55060</p>
+            </div>
+            <div class="contact-item">
+                <i class="fas fa-phone"></i>
+                <p class="contact-label">Phone</p>
+                <p class="contact-detail">571-457-2321</p>
+            </div>
+            <div class="contact-item">
+                <i class="fas fa-envelope"></i>
+                <p class="contact-label">Email</p>
+                <p class="contact-detail">ntamerrwael@mfano.ga</p>
+            </div>
+        </div>
+
+        <div class="message-form">
+            <h3>Send Message</h3>
+            <form id="contact-form">
+                <input type="text" name="fullname" placeholder="Full Name" required>
+                <input type="email" name="email" placeholder="Email" required>
+                <textarea name="message" placeholder="Type your message..." required></textarea>
+                <button type="submit">Send</button>
+            </form>
+        </div>
+    </section>
+
+    <script>
+        const contactForm = document.getElementById('contact-form');
+
+        contactForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            // Get form data
+            const formData = new FormData(contactForm);
+
+            // Send form data to server (e.g., using AJAX or fetch API)
+            fetch('your-server-endpoint', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Handle successful submission
+                    alert('Message sent successfully!');
+                    contactForm.reset();
+                } else {
+                    // Handle error
+                    alert('Error sending message. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again later.');
+            });
+        });
+    </script>
+</body>
+</html>
+{% endblock  %}

@@ -1,0 +1,165 @@
+{%  extends "base.html" %}
+
+{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Renter Dashboard - Cycle Share</title>
+  <style>
+    /* General Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f3f3f5;
+      color: #34495E;
+      text-align: center;
+      overflow-x: hidden;
+    }
+    
+    /* Header Styling */
+    header {
+      background: linear-gradient(135deg, #34495E, #2575fc);
+      color: #fff;
+      padding: 40px;
+      box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+      animation: fadeIn 1.2s ease-out;
+    }
+    
+    header h2 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+    }
+    
+    /* Main Section Styling */
+    main {
+      padding: 40px;
+    }
+
+    /* Fade-In Animation */
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Cycle Listing Styling */
+    .cycle-list {
+      margin: 20px auto;
+      width: 90%;
+      max-width: 600px;
+    }
+
+    .cycle-item {
+      text-align: left;
+      background-color: #fff;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.15);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      animation: fadeIn 1.2s ease-out;
+      margin-bottom: 20px;
+    }
+    
+    .cycle-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0px 20px 30px rgba(0, 0, 0, 0.25);
+    }
+    
+    .owner-info {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .owner-profile-pic, .cycle-image {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      margin-right: 15px;
+      border: 2px solid #2575fc;
+    }
+    
+    .cycle-image {
+      width: 100%;
+      border-radius: 10px;
+      margin-top: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Button Styling */
+    button {
+      background: linear-gradient(135deg, #34495E, #2575fc);
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease-in-out;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+    
+    button:hover {
+      background: linear-gradient(135deg, #2575fc, #34495E);
+      transform: scale(1.05);
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <!-- Cycle 1 -->
+    <div class="cycle-list">
+      <div class="cycle-item">
+        <div class="owner-info">
+          <img src="owner1-profile.jpg" alt="Owner Jane Smith Profile" class="owner-profile-pic">
+          <h3>Owner: Jane Smith</h3>
+        </div>
+        <img src="cycle1.jpg" alt="Cycle Image" class="cycle-image">
+        <p><strong>Available:</strong> 9 AM - 5 PM</p>
+        <button onclick="bookCycle('Jane Smith')">Book Now</button>
+      </div>
+    </div>
+
+    <!-- Cycle 2 -->
+    <div class="cycle-list">
+      <div class="cycle-item">
+        <div class="owner-info">
+          <img src="owner2-profile.jpg" alt="Owner Emily White Profile" class="owner-profile-pic">
+          <h3>Owner: Emily White</h3>
+        </div>
+        <img src="cycle2.jpg" alt="Cycle Image" class="cycle-image">
+        <p><strong>Available:</strong> 1 PM - 7 PM</p>
+        <button onclick="bookCycle('Emily White')">Book Now</button>
+      </div>
+    </div>
+
+    <!-- Cycle 3 -->
+    <div class="cycle-list">
+      <div class="cycle-item">
+        <div class="owner-info">
+          <img src="owner3-profile.jpg" alt="Owner Carlos Garcia Profile" class="owner-profile-pic">
+          <h3>Owner: Carlos Garcia</h3>
+        </div>
+        <img src="cycle3.jpg" alt="Cycle Image" class="cycle-image">
+        <p><strong>Available:</strong> 10 AM - 4 PM</p>
+        <button onclick="bookCycle('Carlos Garcia')">Book Now</button>
+      </div>
+    </div>
+  </main>
+  <script>
+    // function bookCycle(owner) {
+    //   alert(You have booked a cycle from ${owner}.);
+    // }
+  </script>
+</body>
+</html>
+{%endblock body %}

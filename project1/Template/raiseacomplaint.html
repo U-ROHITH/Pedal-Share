@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complaint Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #34495E; /* Primary background color */
+            color: #ffffff;
+        }
+
+        .form-container {
+            width: 500px;
+            background-color: #2C3E50; /* Slightly darker background for contrast */
+            padding: 20px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+        }
+
+        .form-container h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            text-align: left;
+            color: #ECF0F1; /* Lightened heading text color */
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            color: #BDC3C7; /* Lightened label text color */
+            margin-bottom: 5px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 10px;
+            border: 1px solid #95A5A6; /* Border color for input fields */
+            border-radius: 4px;
+            font-size: 16px;
+            color: #ffffff;
+            background-color: #34495E; /* Background color for input fields */
+        }
+
+        .form-group input[type="date"] {
+            cursor: pointer;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .form-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .form-buttons button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            color: #ffffff;
+        }
+
+        .form-buttons .reset-btn {
+            background-color: #E74C3C; /* Red for reset button */
+        }
+
+        .form-buttons .submit-btn {
+            background-color: #1ABC9C; /* Teal for submit button */
+        }
+
+        .form-buttons button:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h2>Complaint Form</h2>
+    <form id="complaintForm">
+        <div class="form-group">
+            <label for="code">Code</label>
+            <input type="text" id="code" name="code" placeholder="Enter..." required>
+        </div>
+
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" placeholder="Enter..." required>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" name="description" placeholder="Enter..." required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="category">Category</label>
+            <select id="category" name="category" required>
+                <option value="Data">Data</option>
+                <option value="Technical">Technical</option>
+                <option value="Service">Service</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="date">Date</label>
+            <input type="date" id="date" name="date" required>
+        </div>
+
+        <div class="form-group">
+            <label for="status">Status</label>
+            <select id="status" name="status" required>
+                <option value="Active">Active</option>
+                <option value="Pending">Pending</option>
+                <option value="Resolved">Resolved</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="remarks">Remarks</label>
+            <textarea id="remarks" name="remarks" placeholder="Enter..."></textarea>
+        </div>
+
+        <div class="form-buttons">
+            <button type="reset" class="reset-btn">Reset</button>
+            <button type="submit" class="submit-btn">Submit</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.getElementById('complaintForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        alert('Form submitted successfully!');
+        // Here you can add form submission logic (e.g., send data to the server)
+    });
+</script>
+
+</body>
+</html>
