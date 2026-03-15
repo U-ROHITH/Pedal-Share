@@ -1,0 +1,420 @@
+{% extends "base.html" %}
+
+{% block body %}
+<style>
+  /* ── Page Header Banner ── */
+  .page-header {
+    background: linear-gradient(135deg, #34495E, #2575fc);
+    color: #fff;
+    padding: 50px 40px;
+    text-align: center;
+  }
+
+  .page-header h1 {
+    font-size: 2.4rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+  }
+
+  .page-header p {
+    font-size: 1rem;
+    opacity: 0.85;
+  }
+
+  /* ── Cycles Grid ── */
+  .cycles-section {
+    padding: 50px 40px;
+    background-color: #f3f3f5;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .cycles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 28px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* ── Cycle Card ── */
+  .cycle-card {
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .cycle-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 16px 36px rgba(0,0,0,0.13);
+  }
+
+  .cycle-card.unavailable { opacity: 0.75; }
+  .cycle-card.unavailable:hover { transform: none; }
+
+  /* Image placeholder */
+  .cycle-img-wrapper {
+    width: 100%;
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .cycle-img-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: rgba(255,255,255,0.85);
+  }
+
+  .cycle-img-placeholder i { font-size: 3.5rem; margin-bottom: 8px; }
+  .cycle-img-placeholder span { font-size: 0.88rem; letter-spacing: 0.5px; font-weight: 600; }
+
+  /* Type badge on image */
+  .type-badge {
+    position: absolute;
+    top: 12px; left: 12px;
+    background: rgba(0,0,0,0.45);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    backdrop-filter: blur(4px);
+  }
+
+  .status-chip {
+    position: absolute;
+    top: 12px; right: 12px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  .status-chip.available  { background: #1ABC9C; color: #fff; }
+  .status-chip.unavailable { background: #e74c3c; color: #fff; }
+
+  /* Card Body */
+  .cycle-card-body { padding: 20px; }
+
+  .cycle-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #34495E;
+    margin-bottom: 4px;
+  }
+
+  .cycle-price {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #2575fc;
+    margin-bottom: 14px;
+  }
+
+  .cycle-price span { font-size: 0.8rem; color: #95a5a6; font-weight: 400; }
+
+  .owner-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .owner-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .owner-avatar i { color: #fff; font-size: 0.95rem; }
+
+  .owner-info h4 { font-size: 0.9rem; font-weight: 600; color: #34495E; margin: 0; }
+  .owner-info span { font-size: 0.75rem; color: #95a5a6; }
+
+  .cycle-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.83rem;
+    color: #5a6a7a;
+    margin-bottom: 7px;
+  }
+
+  .cycle-meta i { color: #1ABC9C; width: 14px; }
+
+  .rating-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 16px;
+    font-size: 0.83rem;
+    color: #5a6a7a;
+  }
+
+  .stars { color: #f39c12; }
+
+  /* Booking form area */
+  .book-area { margin-top: 4px; }
+
+  .hours-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .hours-row label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #34495E;
+    white-space: nowrap;
+  }
+
+  .hours-input {
+    width: 70px;
+    padding: 7px 10px;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 7px;
+    font-size: 0.9rem;
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+    background: #fafafa;
+    box-sizing: border-box;
+  }
+
+  .hours-input:focus {
+    outline: none;
+    border-color: #2575fc;
+    box-shadow: 0 0 0 3px rgba(37,117,252,0.1);
+  }
+
+  .cost-preview {
+    font-size: 0.78rem;
+    color: #1ABC9C;
+    font-weight: 600;
+  }
+
+  .book-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #34495E, #2575fc);
+    color: #fff;
+    border: none;
+    padding: 11px 20px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: opacity 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 14px rgba(37,117,252,0.22);
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .book-btn:hover { opacity: 0.88; box-shadow: 0 6px 20px rgba(37,117,252,0.38); }
+
+  .signin-btn {
+    width: 100%;
+    background: #f0f4ff;
+    color: #2575fc;
+    border: 1.5px solid #d0d8f0;
+    padding: 11px 20px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    text-decoration: none !important;
+    display: block;
+    text-align: center;
+    transition: background 0.2s;
+  }
+
+  .signin-btn:hover { background: #e0e8ff; color: #2575fc !important; }
+
+  .unavail-btn {
+    width: 100%;
+    background: #f5f5f5;
+    color: #aaa;
+    border: none;
+    padding: 11px 20px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: not-allowed;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  /* Flash messages */
+  .flash-wrap { max-width: 1100px; margin: 20px auto 0; padding: 0 40px; }
+  .msg-banner {
+    padding: 11px 16px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    font-size: 0.88rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .msg-error   { background:#fef0f0; border-left:4px solid #e74c3c; color:#c0392b; }
+  .msg-success { background:#eafaf1; border-left:4px solid #1ABC9C; color:#1e8449; }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .cycle-card { animation: fadeInUp 0.5s ease-out both; }
+
+  @media (max-width: 600px) {
+    .cycles-section { padding: 30px 16px; }
+    .page-header { padding: 36px 20px; }
+    .page-header h1 { font-size: 1.7rem; }
+    .flash-wrap { padding: 0 16px; }
+  }
+</style>
+
+<!-- Flash Messages -->
+{% if messages %}
+  <div class="flash-wrap" style="padding-top:16px;">
+    {% for message in messages %}
+      <div class="msg-banner {% if message.tags == 'error' %}msg-error{% else %}msg-success{% endif %}">
+        <i class="fas fa-{% if message.tags == 'error' %}exclamation-circle{% else %}check-circle{% endif %}"></i>
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<!-- Page Header -->
+<div class="page-header">
+  <h1><i class="fas fa-bicycle" style="margin-right:10px;"></i>Available Cycles</h1>
+  <p>Pick a cycle, set your hours, and book instantly.</p>
+</div>
+
+<!-- Cycles Grid -->
+<div class="cycles-section">
+  <div class="cycles-grid">
+    {% for cycle in cycles %}
+    <div class="cycle-card {% if not cycle.is_available %}unavailable{% endif %}" style="animation-delay: {{ forloop.counter0 }}00ms;">
+      <!-- Image / Placeholder -->
+      <div class="cycle-img-wrapper" style="background: {{ cycle.avatar_color }};">
+        <div class="cycle-img-placeholder">
+          <i class="fas fa-bicycle"></i>
+          <span>{{ cycle.title }}</span>
+        </div>
+        <span class="type-badge">{{ cycle.cycle_type }}</span>
+        <span class="status-chip {% if cycle.is_available %}available{% else %}unavailable{% endif %}">
+          {% if cycle.is_available %}Available{% else %}Booked{% endif %}
+        </span>
+      </div>
+
+      <div class="cycle-card-body">
+        <div class="cycle-title">{{ cycle.title }}</div>
+        <div class="cycle-price">₹{{ cycle.price_per_hour|floatformat:0 }} <span>/ hour</span></div>
+
+        <div class="owner-row">
+          <div class="owner-avatar" style="background: {{ cycle.avatar_color }};">
+            <i class="fas fa-user"></i>
+          </div>
+          <div class="owner-info">
+            <h4>{{ cycle.owner_name }}</h4>
+            <span>Verified Owner</span>
+          </div>
+        </div>
+
+        <div class="cycle-meta">
+          <i class="fas fa-clock"></i>
+          {{ cycle.available_from|time:"g A" }} – {{ cycle.available_until|time:"g A" }}
+        </div>
+        <div class="cycle-meta">
+          <i class="fas fa-map-marker-alt"></i>
+          {{ cycle.location }}
+        </div>
+        <div class="cycle-meta">
+          <i class="fas fa-palette"></i>
+          {{ cycle.color }}
+        </div>
+
+        <div class="rating-row">
+          <span class="stars">
+            {% for i in "12345" %}
+              {% if forloop.counter <= cycle.rating %}
+                <i class="fas fa-star"></i>
+              {% else %}
+                <i class="far fa-star"></i>
+              {% endif %}
+            {% endfor %}
+          </span>
+          {{ cycle.rating }} &bull; {{ cycle.total_rides }} rides
+        </div>
+
+        <!-- Booking area -->
+        <div class="book-area">
+          {% if user.is_authenticated and cycle.owner == user %}
+            <a href="{% url 'my_cycles' %}" class="signin-btn">
+              <i class="fas fa-cog" style="margin-right:6px;"></i>Manage (Your Cycle)
+            </a>
+          {% elif cycle.is_available %}
+            {% if user.is_authenticated %}
+              <form method="POST" action="{% url 'book_cycle' cycle.id %}">
+                {% csrf_token %}
+                <div class="hours-row">
+                  <label for="hours-{{ cycle.id }}">Hours:</label>
+                  <input
+                    class="hours-input"
+                    type="number"
+                    id="hours-{{ cycle.id }}"
+                    name="hours"
+                    value="1"
+                    min="1"
+                    max="12"
+                    oninput="updateCost({{ cycle.id }}, {{ cycle.price_per_hour }}, this.value)"
+                  >
+                  <span class="cost-preview" id="cost-{{ cycle.id }}">₹{{ cycle.price_per_hour|floatformat:0 }} total</span>
+                </div>
+                <button type="submit" class="book-btn">
+                  <i class="fas fa-bolt" style="margin-right:6px;"></i>Book Now
+                </button>
+              </form>
+            {% else %}
+              <a href="{% url 'signin' %}?next={% url 'availablecycles' %}" class="signin-btn">
+                <i class="fas fa-sign-in-alt" style="margin-right:6px;"></i>Sign In to Book
+              </a>
+            {% endif %}
+          {% else %}
+            <button class="unavail-btn" disabled>
+              <i class="fas fa-times-circle" style="margin-right:6px;"></i>Currently Booked
+            </button>
+          {% endif %}
+        </div>
+
+      </div>
+    </div>
+    {% empty %}
+      <p style="text-align:center;color:#aaa;grid-column:1/-1;padding:40px 0;">
+        No cycles available right now. Check back soon!
+      </p>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+  function updateCost(cycleId, pricePerHour, hours) {
+    const h = parseInt(hours) || 1;
+    const total = (pricePerHour * h).toFixed(0);
+    document.getElementById('cost-' + cycleId).textContent = '₹' + total + ' total';
+  }
+</script>
+{% endblock body %}

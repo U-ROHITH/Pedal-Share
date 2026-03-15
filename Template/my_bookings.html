@@ -1,0 +1,327 @@
+{% extends "base.html" %}
+
+{% block body %}
+<style>
+  .bookings-page {
+    min-height: calc(100vh - 70px);
+    background: #f3f3f5;
+    font-family: 'Poppins', sans-serif;
+    padding: 40px;
+  }
+
+  .bookings-header {
+    max-width: 900px;
+    margin: 0 auto 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .bookings-header h1 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #34495E;
+    margin: 0;
+  }
+
+  .bookings-header a {
+    background: linear-gradient(135deg, #34495E, #2575fc);
+    color: #fff !important;
+    text-decoration: none !important;
+    padding: 9px 20px;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    transition: opacity 0.2s;
+  }
+
+  .bookings-header a:hover { opacity: 0.88; }
+
+  /* Flash messages */
+  .flash-wrap {
+    max-width: 900px;
+    margin: 0 auto 16px;
+  }
+
+  .msg-banner {
+    padding: 11px 16px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    font-size: 0.88rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .msg-error   { background:#fef0f0; border-left:4px solid #e74c3c; color:#c0392b; }
+  .msg-success { background:#eafaf1; border-left:4px solid #1ABC9C; color:#1e8449; }
+
+  /* Booking card */
+  .booking-list {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .booking-card {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 14px rgba(0,0,0,0.07);
+    overflow: hidden;
+    display: flex;
+    animation: fadeIn 0.4s ease both;
+  }
+
+  /* Left color strip based on status */
+  .booking-strip {
+    width: 6px;
+    flex-shrink: 0;
+  }
+
+  .booking-strip.active    { background: #2575fc; }
+  .booking-strip.completed { background: #1ABC9C; }
+  .booking-strip.cancelled { background: #e74c3c; }
+
+  .booking-body {
+    flex: 1;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .booking-info { flex: 1; min-width: 200px; }
+
+  .booking-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #34495E;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .status-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .status-badge.active    { background: #e8f0ff; color: #2575fc; }
+  .status-badge.completed { background: #eafaf1; color: #1ABC9C; }
+  .status-badge.cancelled { background: #fef0f0; color: #e74c3c; }
+
+  .booking-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 4px;
+  }
+
+  .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.83rem;
+    color: #5a6a7a;
+  }
+
+  .meta-item i { color: #1ABC9C; width: 14px; }
+
+  /* Amount */
+  .booking-amount {
+    text-align: right;
+    min-width: 100px;
+  }
+
+  .booking-amount .amount {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #34495E;
+  }
+
+  .booking-amount .amount span {
+    font-size: 1rem;
+    opacity: 0.7;
+    margin-right: 2px;
+  }
+
+  .booking-amount .hrs {
+    font-size: 0.78rem;
+    color: #95a5a6;
+    margin-top: 2px;
+  }
+
+  /* Action buttons */
+  .booking-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-complete {
+    background: linear-gradient(135deg, #1ABC9C, #16A085);
+    color: #fff;
+    border: none;
+    padding: 9px 18px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    transition: opacity 0.2s;
+  }
+
+  .btn-complete:hover { opacity: 0.88; }
+
+  .btn-cancel {
+    background: #fff;
+    color: #e74c3c;
+    border: 1.5px solid #e74c3c;
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .btn-cancel:hover { background: #fef0f0; }
+
+  /* Empty state */
+  .empty-state {
+    max-width: 900px;
+    margin: 60px auto;
+    text-align: center;
+    color: #aaa;
+  }
+
+  .empty-state i { font-size: 4rem; margin-bottom: 16px; display: block; }
+  .empty-state h3 { font-size: 1.2rem; color: #7f8c8d; margin-bottom: 8px; }
+  .empty-state p { font-size: 0.9rem; margin-bottom: 24px; }
+  .empty-state a {
+    background: linear-gradient(135deg, #34495E, #2575fc);
+    color: #fff !important;
+    text-decoration: none !important;
+    padding: 11px 28px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: opacity 0.2s;
+  }
+
+  .empty-state a:hover { opacity: 0.88; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 640px) {
+    .bookings-page { padding: 20px 16px; }
+    .booking-body { flex-direction: column; gap: 12px; }
+    .booking-amount { text-align: left; }
+    .booking-actions { width: 100%; }
+    .btn-complete, .btn-cancel { flex: 1; text-align: center; }
+  }
+</style>
+
+<div class="bookings-page">
+  <div class="bookings-header">
+    <h1><i class="fas fa-list-alt" style="margin-right:10px;color:#2575fc;"></i>My Bookings</h1>
+    <a href="{% url 'availablecycles' %}">
+      <i class="fas fa-plus" style="margin-right:6px;"></i>Book a Cycle
+    </a>
+  </div>
+
+  {% if messages %}
+    <div class="flash-wrap">
+      {% for message in messages %}
+        <div class="msg-banner {% if message.tags == 'error' %}msg-error{% else %}msg-success{% endif %}">
+          <i class="fas fa-{% if message.tags == 'error' %}exclamation-circle{% else %}check-circle{% endif %}"></i>
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% if bookings %}
+    <div class="booking-list">
+      {% for booking in bookings %}
+      <div class="booking-card" style="animation-delay: {{ forloop.counter0 }}0ms;">
+        <div class="booking-strip {{ booking.status }}"></div>
+        <div class="booking-body">
+
+          <div class="booking-info">
+            <div class="booking-title">
+              <i class="fas fa-bicycle" style="color:#2575fc;"></i>
+              {{ booking.cycle.title }}
+              <span class="status-badge {{ booking.status }}">{{ booking.status }}</span>
+            </div>
+            <div class="booking-meta">
+              <div class="meta-item">
+                <i class="fas fa-map-marker-alt"></i>
+                {{ booking.cycle.location }}
+              </div>
+              <div class="meta-item">
+                <i class="fas fa-tag"></i>
+                {{ booking.cycle.cycle_type|capfirst }}
+              </div>
+              <div class="meta-item">
+                <i class="fas fa-calendar-alt"></i>
+                {{ booking.booked_at|date:"d M Y, g:i A" }}
+              </div>
+            </div>
+          </div>
+
+          <div class="booking-amount">
+            <div class="amount"><span>₹</span>{{ booking.total_amount|floatformat:0 }}</div>
+            <div class="hrs">{{ booking.hours }} hr{% if booking.hours != 1 %}s{% endif %} @ ₹{{ booking.cycle.price_per_hour|floatformat:0 }}/hr</div>
+          </div>
+
+          {% if booking.status == 'active' %}
+          <div class="booking-actions">
+            <form method="POST" action="{% url 'complete_booking' booking.id %}">
+              {% csrf_token %}
+              <button type="submit" class="btn-complete">
+                <i class="fas fa-check" style="margin-right:5px;"></i>Complete Ride
+              </button>
+            </form>
+            <form method="POST" action="{% url 'cancel_booking' booking.id %}">
+              {% csrf_token %}
+              <button type="submit" class="btn-cancel" onclick="return confirm('Cancel this booking and get a full refund?')">
+                <i class="fas fa-times" style="margin-right:5px;"></i>Cancel
+              </button>
+            </form>
+          </div>
+          {% endif %}
+
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+  {% else %}
+    <div class="empty-state">
+      <i class="fas fa-bicycle"></i>
+      <h3>No bookings yet</h3>
+      <p>You haven't booked any cycles. Start your first ride today!</p>
+      <a href="{% url 'availablecycles' %}">
+        <i class="fas fa-search" style="margin-right:6px;"></i>Browse Available Cycles
+      </a>
+    </div>
+  {% endif %}
+</div>
+{% endblock body %}

@@ -1,0 +1,728 @@
+{% extends "base.html" %}
+
+{% block body %}
+<style>
+  .help-page {
+    font-family: 'Poppins', sans-serif;
+    background: #f3f3f5;
+  }
+
+  /* ── Hero ── */
+  .help-hero {
+    background: linear-gradient(135deg, #34495E 0%, #2575fc 100%);
+    color: #fff;
+    padding: 64px 40px;
+    text-align: center;
+  }
+
+  .help-hero h1 { font-size: 2.4rem; font-weight: 700; margin-bottom: 12px; }
+  .help-hero h1 span { color: #1ABC9C; }
+  .help-hero p  { font-size: 1rem; opacity: 0.85; max-width: 540px; margin: 0 auto 28px; line-height: 1.7; }
+
+  /* Search bar */
+  .help-search {
+    display: flex;
+    max-width: 500px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 30px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  }
+
+  .help-search input {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 14px 22px;
+    font-size: 0.92rem;
+    font-family: 'Poppins', sans-serif;
+    color: #34495E;
+  }
+
+  .help-search button {
+    background: #1ABC9C;
+    border: none;
+    padding: 14px 22px;
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .help-search button:hover { background: #16A085; }
+
+  /* ── Quick Links ── */
+  .quick-section {
+    padding: 56px 40px 20px;
+    max-width: 1060px;
+    margin: 0 auto;
+  }
+
+  .section-heading {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+
+  .section-heading h2 { font-size: 1.6rem; font-weight: 700; color: #34495E; margin-bottom: 6px; }
+  .section-heading .bar { width: 52px; height: 4px; background: #1ABC9C; border-radius: 2px; margin: 8px auto; }
+  .section-heading p { font-size: 0.9rem; color: #7f8c8d; }
+
+  .quick-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 20px;
+  }
+
+  .quick-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 28px 22px;
+    text-align: center;
+    box-shadow: 0 2px 14px rgba(0,0,0,0.07);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-decoration: none !important;
+    color: inherit;
+    display: block;
+  }
+
+  .quick-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 28px rgba(0,0,0,0.12);
+    color: inherit;
+  }
+
+  .quick-icon {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 14px;
+    font-size: 1.3rem;
+    color: #fff;
+  }
+
+  .quick-card h4 { font-size: 0.95rem; font-weight: 700; color: #34495E; margin-bottom: 6px; }
+  .quick-card p  { font-size: 0.8rem; color: #7f8c8d; line-height: 1.5; }
+
+  /* ── FAQ ── */
+  .faq-section {
+    padding: 48px 40px 60px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .faq-item {
+    background: #fff;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    overflow: hidden;
+  }
+
+  .faq-question {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 22px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .faq-question h4 {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #34495E;
+    margin: 0;
+    flex: 1;
+    padding-right: 12px;
+  }
+
+  .faq-icon {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: #f0f4ff;
+    color: #2575fc;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+    transition: background 0.2s, transform 0.3s;
+  }
+
+  .faq-item.open .faq-icon {
+    background: #1ABC9C;
+    color: #fff;
+    transform: rotate(45deg);
+  }
+
+  .faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease, padding 0.2s;
+    padding: 0 22px;
+    font-size: 0.87rem;
+    color: #5a6a7a;
+    line-height: 1.7;
+  }
+
+  .faq-item.open .faq-answer {
+    max-height: 400px;
+    padding: 0 22px 18px;
+  }
+
+  .faq-answer a { color: #2575fc; text-decoration: none !important; font-weight: 600; }
+  .faq-answer a:hover { text-decoration: underline !important; }
+
+  /* ── Steps Guide ── */
+  .guide-section {
+    background: #fff;
+    padding: 60px 40px;
+  }
+
+  .guide-inner { max-width: 900px; margin: 0 auto; }
+
+  .tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .tab-btn {
+    padding: 9px 22px;
+    border-radius: 22px;
+    border: 1.5px solid #d0d8f0;
+    background: #fff;
+    color: #5a6a7a;
+    font-size: 0.88rem;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .tab-btn.active, .tab-btn:hover {
+    background: linear-gradient(135deg, #2575fc, #34495E);
+    color: #fff;
+    border-color: transparent;
+  }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  .steps-list { list-style: none; margin: 0; padding: 0; }
+
+  .step-row {
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+    margin-bottom: 24px;
+  }
+
+  .step-num {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1ABC9C, #16A085);
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .step-text h4 { font-size: 0.95rem; font-weight: 700; color: #34495E; margin-bottom: 4px; }
+  .step-text p  { font-size: 0.85rem; color: #7f8c8d; line-height: 1.6; margin: 0; }
+
+  /* ── Contact CTA ── */
+  .help-cta {
+    background: linear-gradient(135deg, #34495E, #2575fc);
+    padding: 56px 40px;
+    text-align: center;
+    color: #fff;
+  }
+
+  .help-cta h2 { font-size: 1.7rem; font-weight: 700; margin-bottom: 10px; }
+  .help-cta p  { font-size: 0.95rem; opacity: 0.85; margin-bottom: 28px; }
+
+  .cta-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+  .cta-btn-solid {
+    background: #1ABC9C;
+    color: #fff !important;
+    text-decoration: none !important;
+    padding: 12px 28px;
+    border-radius: 28px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: opacity 0.2s;
+  }
+
+  .cta-btn-solid:hover { opacity: 0.88; }
+
+  .cta-btn-outline {
+    background: transparent;
+    color: #fff !important;
+    text-decoration: none !important;
+    padding: 12px 28px;
+    border-radius: 28px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border: 2px solid rgba(255,255,255,0.7);
+    transition: background 0.2s;
+  }
+
+  .cta-btn-outline:hover { background: rgba(255,255,255,0.1); }
+
+  @media (max-width: 768px) {
+    .help-hero { padding: 48px 20px; }
+    .help-hero h1 { font-size: 1.8rem; }
+    .quick-section, .faq-section { padding: 40px 16px 20px; }
+    .guide-section { padding: 48px 16px; }
+    .help-cta { padding: 48px 20px; }
+  }
+</style>
+
+<div class="help-page">
+
+  <!-- Hero -->
+  <div class="help-hero">
+    <h1>How can we <span>help</span> you?</h1>
+    <p>Find answers to common questions, step-by-step guides, and ways to get in touch with our team.</p>
+    <div class="help-search">
+      <input type="text" id="faqSearch" placeholder="Search for a topic…" oninput="searchFAQ(this.value)">
+      <button type="button"><i class="fas fa-search"></i></button>
+    </div>
+  </div>
+
+  <!-- Quick Links -->
+  <div class="quick-section">
+    <div class="section-heading">
+      <h2>Browse by Topic</h2>
+      <div class="bar"></div>
+      <p>Jump straight to what you need.</p>
+    </div>
+    <div class="quick-grid">
+      <a href="#getting-started" class="quick-card" onclick="openTab('getting-started')">
+        <div class="quick-icon" style="background:linear-gradient(135deg,#1ABC9C,#16A085);">
+          <i class="fas fa-user-plus"></i>
+        </div>
+        <h4>Getting Started</h4>
+        <p>Create an account, get your ₹500 bonus, and take your first ride.</p>
+      </a>
+      <a href="#booking" class="quick-card" onclick="openTab('booking')">
+        <div class="quick-icon" style="background:linear-gradient(135deg,#2575fc,#34495E);">
+          <i class="fas fa-bicycle"></i>
+        </div>
+        <h4>Booking a Cycle</h4>
+        <p>How to find, book, cancel, and complete a ride.</p>
+      </a>
+      <a href="#wallet" class="quick-card" onclick="openTab('wallet')">
+        <div class="quick-icon" style="background:linear-gradient(135deg,#f39c12,#e67e22);">
+          <i class="fas fa-wallet"></i>
+        </div>
+        <h4>Wallet & Payments</h4>
+        <p>Adding money, refunds, transaction history explained.</p>
+      </a>
+      <a href="#listing" class="quick-card" onclick="openTab('listing')">
+        <div class="quick-icon" style="background:linear-gradient(135deg,#9b59b6,#8e44ad);">
+          <i class="fas fa-list-alt"></i>
+        </div>
+        <h4>Listing Your Cycle</h4>
+        <p>How to list, manage availability, and remove your cycle.</p>
+      </a>
+      <a href="#account" class="quick-card" onclick="openTab('account')">
+        <div class="quick-icon" style="background:linear-gradient(135deg,#e74c3c,#c0392b);">
+          <i class="fas fa-cog"></i>
+        </div>
+        <h4>Account & Safety</h4>
+        <p>Login issues, wallet security, and account management.</p>
+      </a>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="faq-section">
+    <div class="section-heading">
+      <h2>Frequently Asked Questions</h2>
+      <div class="bar"></div>
+    </div>
+
+    <div id="faqList">
+
+      <div class="faq-item" data-keywords="signup register account create free bonus wallet">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <h4>How do I create an account?</h4>
+          <span class="faq-icon"><i class="fas fa-plus"></i></span>
+        </div>
+        <div class="faq-answer">
+          Click <strong>Sign Up</strong> in the top navbar. Enter your full name, email, and a password (minimum 8 characters). You'll instantly receive <strong>₹500 free</strong> in your wallet — no credit card needed. You're then logged in and ready to book.
+        </div>
+      </div>
+
+      <div class="faq-item" data-keywords="book cycle ride hours cost price">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <h4>How do I book a cycle?</h4>
+          <span class="faq-icon"><i class="fas fa-plus"></i></span>
+        </div>
+        <div class="faq-answer">
+          Go to <strong>Available Cycles</strong>. Find a cycle you like, enter the number of hours you need, and click <strong>Book Now</strong>. The total cost is deducted from your wallet instantly and your booking appears under <strong>My Bookings</strong>.
+        </div>
+      </div>
+
+      <div class="faq-item" data-keywords="cancel refund booking money back wallet">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <h4>Can I cancel a booking? Will I get a refund?</h4>
+          <span class="faq-icon"><i class="fas fa-plus"></i></span>
+        </div>
+        <div class="faq-answer">
+          Yes! Go to <strong>My Bookings</strong> and click <strong>Cancel</strong> on any active booking. You get a <strong>100% full refund</strong> instantly back to your PedalShare wallet.
+        </div>
+      </div>
+
+      <div class="faq-item" data-keywords="complete ride finish return cycle done">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <h4>How do I mark a ride as completed?</h4>
+          <span class="faq-icon"><i class="fas fa-plus"></i></span>
+        </div>
+        <div class="faq-answer">
+          Once you've returned the cycle to the owner, go to <strong>My Bookings</strong> and click <strong>Complete Ride</strong>. This marks the booking as done and makes the cycle available for other students again.
+        </div>
+      </div>
+
+      <div class="faq-item" data-keywords="wallet add money top up balance rupees">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <h4>How do I add money to my wallet?</h4>
+          <span class="faq-icon"><i class="fas fa-plus"></i></span>
+        </div>
+        <div class="faq-answer">
+          Go to <strong>Wallet</strong> in the navbar. Enter the amount (₹1 – ₹10,000) and click <strong>Add to Wallet</strong>. You can also go to the <a href="{% url 'payment_gateway' %}">Payment Gateway</a> to pay via card. Your balance updates immediately and a transaction record is created.
+        </div>
+      </div>
+
+      <div class="faq-item" data-keywords="list cycle earn money owner listing">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <h4>How do I list my own cycle for renting?</h4>
+          <span class="faq-icon"><i class="fas fa-plus"></i></span>
+        </div>
+        <div class="faq-answer">
+          Click <strong>My Cycles</strong> in the navbar, then <strong>List a Cycle</strong>. Fill in the title, type (regular/hybrid/mountain/electric), colour, price per hour, pickup location, and availability times. Your cycle will appear in the marketplace instantly.
+        </div>
+      </div>
+
+      <div class="faq-item" data-keywords="remove delete cycle listing stop">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <h4>How do I remove my cycle from the marketplace?</h4>
+          <span class="faq-icon"><i class="fas fa-plus"></i></span>
+        </div>
+        <div class="faq-answer">
+          Go to <strong>My Cycles</strong> and click the <strong>trash icon</strong> on the cycle you want to remove. If someone has an active booking on it, they'll automatically receive a full refund before the listing is deleted.
+        </div>
+      </div>
+
+      <div class="faq-item" data-keywords="available unavailable toggle mark pause cycle">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <h4>Can I temporarily mark my cycle as unavailable?</h4>
+          <span class="faq-icon"><i class="fas fa-plus"></i></span>
+        </div>
+        <div class="faq-answer">
+          Yes. In <strong>My Cycles</strong>, click <strong>Mark Unavailable</strong> on any listed cycle. It will be hidden from bookings until you click <strong>Mark Available</strong> again. You can't pause a cycle while it has an active booking in progress.
+        </div>
+      </div>
+
+      <div class="faq-item" data-keywords="book own cycle self">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <h4>Can I book my own cycle?</h4>
+          <span class="faq-icon"><i class="fas fa-plus"></i></span>
+        </div>
+        <div class="faq-answer">
+          No. The platform prevents you from booking a cycle you've listed. This is by design — owners manage their cycle from the <strong>My Cycles</strong> page instead.
+        </div>
+      </div>
+
+      <div class="faq-item" data-keywords="password forgot login sign in problem">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <h4>I forgot my password / can't sign in</h4>
+          <span class="faq-icon"><i class="fas fa-plus"></i></span>
+        </div>
+        <div class="faq-answer">
+          Make sure you're using the email address you registered with. Passwords are case-sensitive. If you're still stuck, <a href="{% url 'contactus' %}">contact our support team</a> and we'll help you regain access.
+        </div>
+      </div>
+
+      <div class="faq-item" data-keywords="secure safe wallet money fraud">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <h4>Is my wallet and payment information safe?</h4>
+          <span class="faq-icon"><i class="fas fa-plus"></i></span>
+        </div>
+        <div class="faq-answer">
+          Yes. All transactions are logged and protected. Your wallet balance is never stored as raw currency outside our secured database. Payment gateway connections use 256-bit SSL encryption.
+        </div>
+      </div>
+
+      <div class="faq-item" data-keywords="complaint problem issue report">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <h4>How do I report a problem or raise a complaint?</h4>
+          <span class="faq-icon"><i class="fas fa-plus"></i></span>
+        </div>
+        <div class="faq-answer">
+          Use the <a href="{% url 'raiseacomplaint' %}">Raise a Complaint</a> page. Fill in the category, your booking reference (if applicable), and a description. We respond within 48 hours.
+        </div>
+      </div>
+
+      <div class="faq-item no-result" style="display:none;">
+        <div style="padding:24px;text-align:center;color:#aaa;">
+          <i class="fas fa-search" style="font-size:2rem;margin-bottom:10px;display:block;"></i>
+          No results found. Try different keywords or <a href="{% url 'contactus' %}" style="color:#2575fc;">contact us</a>.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Step-by-step Guide -->
+  <div class="guide-section" id="guide">
+    <div class="guide-inner">
+      <div class="section-heading">
+        <h2>Step-by-Step Guides</h2>
+        <div class="bar"></div>
+      </div>
+      <div class="tabs">
+        <button class="tab-btn active" onclick="openTab('getting-started')">Getting Started</button>
+        <button class="tab-btn" onclick="openTab('booking')">Booking a Cycle</button>
+        <button class="tab-btn" onclick="openTab('wallet')">Wallet & Payments</button>
+        <button class="tab-btn" onclick="openTab('listing')">Listing Your Cycle</button>
+        <button class="tab-btn" onclick="openTab('account')">Account & Safety</button>
+      </div>
+
+      <!-- Getting Started -->
+      <div class="tab-content active" id="tab-getting-started">
+        <ul class="steps-list">
+          <li class="step-row">
+            <div class="step-num">1</div>
+            <div class="step-text">
+              <h4>Create your account</h4>
+              <p>Click <strong>Sign Up</strong> in the navbar. Enter your name, email, and a strong password. Takes under 60 seconds.</p>
+            </div>
+          </li>
+          <li class="step-row">
+            <div class="step-num">2</div>
+            <div class="step-text">
+              <h4>Claim your ₹500 bonus</h4>
+              <p>As soon as you sign up, ₹500 is instantly credited to your wallet — no promo code needed.</p>
+            </div>
+          </li>
+          <li class="step-row">
+            <div class="step-num">3</div>
+            <div class="step-text">
+              <h4>Browse available cycles</h4>
+              <p>Go to <strong>Available Cycles</strong> to see all cycles near you with ratings, pricing, and pickup locations.</p>
+            </div>
+          </li>
+          <li class="step-row">
+            <div class="step-num">4</div>
+            <div class="step-text">
+              <h4>Book and ride</h4>
+              <p>Select your hours, click Book Now, and meet the owner at the listed pickup location. Enjoy your ride!</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Booking a Cycle -->
+      <div class="tab-content" id="tab-booking">
+        <ul class="steps-list">
+          <li class="step-row">
+            <div class="step-num">1</div>
+            <div class="step-text">
+              <h4>Browse cycles</h4>
+              <p>Visit <strong>Available Cycles</strong>. Filter by type (regular, hybrid, mountain, electric) and check availability times.</p>
+            </div>
+          </li>
+          <li class="step-row">
+            <div class="step-num">2</div>
+            <div class="step-text">
+              <h4>Choose your hours</h4>
+              <p>Enter how many hours you need. The total cost updates live — you always know exactly what you'll pay.</p>
+            </div>
+          </li>
+          <li class="step-row">
+            <div class="step-num">3</div>
+            <div class="step-text">
+              <h4>Confirm booking</h4>
+              <p>Click <strong>Book Now</strong>. The amount is deducted from your wallet instantly and the booking is confirmed.</p>
+            </div>
+          </li>
+          <li class="step-row">
+            <div class="step-num">4</div>
+            <div class="step-text">
+              <h4>Complete or cancel</h4>
+              <p>After your ride, go to <strong>My Bookings</strong> and click <strong>Complete Ride</strong>. If plans change, click <strong>Cancel</strong> for a full refund.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Wallet -->
+      <div class="tab-content" id="tab-wallet">
+        <ul class="steps-list">
+          <li class="step-row">
+            <div class="step-num">1</div>
+            <div class="step-text">
+              <h4>Check your balance</h4>
+              <p>Click the <strong>₹ balance</strong> shown in the navbar or go to the Wallet page to see your current balance and transaction history.</p>
+            </div>
+          </li>
+          <li class="step-row">
+            <div class="step-num">2</div>
+            <div class="step-text">
+              <h4>Add money (quick)</h4>
+              <p>On the Wallet page, use the quick-amount buttons (₹100, ₹200, ₹500…) or enter a custom amount and click <strong>Add to Wallet</strong>.</p>
+            </div>
+          </li>
+          <li class="step-row">
+            <div class="step-num">3</div>
+            <div class="step-text">
+              <h4>Add money (card/UPI)</h4>
+              <p>Go to the <strong>Payment Gateway</strong>, enter your billing details and card information, and click <strong>Pay & Add to Wallet</strong>.</p>
+            </div>
+          </li>
+          <li class="step-row">
+            <div class="step-num">4</div>
+            <div class="step-text">
+              <h4>View transactions</h4>
+              <p>Every credit and debit is logged with a timestamp on your Wallet page — bookings, refunds, top-ups, and the welcome bonus.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Listing -->
+      <div class="tab-content" id="tab-listing">
+        <ul class="steps-list">
+          <li class="step-row">
+            <div class="step-num">1</div>
+            <div class="step-text">
+              <h4>Go to My Cycles</h4>
+              <p>Click <strong>My Cycles</strong> in the navbar (visible after login).</p>
+            </div>
+          </li>
+          <li class="step-row">
+            <div class="step-num">2</div>
+            <div class="step-text">
+              <h4>Click "List a Cycle"</h4>
+              <p>Fill in the title, cycle type, colour, price per hour, pickup location, and the hours your cycle is available each day.</p>
+            </div>
+          </li>
+          <li class="step-row">
+            <div class="step-num">3</div>
+            <div class="step-text">
+              <h4>Your cycle goes live</h4>
+              <p>The cycle instantly appears in the marketplace for other students to book.</p>
+            </div>
+          </li>
+          <li class="step-row">
+            <div class="step-num">4</div>
+            <div class="step-text">
+              <h4>Manage it anytime</h4>
+              <p>Toggle it unavailable when you need it back, or delete the listing. Active booking refunds are handled automatically.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Account -->
+      <div class="tab-content" id="tab-account">
+        <ul class="steps-list">
+          <li class="step-row">
+            <div class="step-num">1</div>
+            <div class="step-text">
+              <h4>Signing in</h4>
+              <p>Use the email and password you registered with. Your username is your email address.</p>
+            </div>
+          </li>
+          <li class="step-row">
+            <div class="step-num">2</div>
+            <div class="step-text">
+              <h4>Session security</h4>
+              <p>Always click <strong>Logout</strong> when using a shared device. Your session is protected by Django's secure session framework.</p>
+            </div>
+          </li>
+          <li class="step-row">
+            <div class="step-num">3</div>
+            <div class="step-text">
+              <h4>Account issues</h4>
+              <p>If you can't sign in or have been locked out, contact our support team via the <strong>Contact Us</strong> page with your registered email.</p>
+            </div>
+          </li>
+          <li class="step-row">
+            <div class="step-num">4</div>
+            <div class="step-text">
+              <h4>Report a problem</h4>
+              <p>Use the <strong>Raise a Complaint</strong> page for any booking disputes, cycle condition issues, or owner behaviour concerns.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Still need help CTA -->
+  <div class="help-cta">
+    <h2>Still need help?</h2>
+    <p>Our support team is available Mon–Fri 9 AM–8 PM. We'd love to hear from you.</p>
+    <div class="cta-btns">
+      <a href="{% url 'contactus' %}" class="cta-btn-solid">
+        <i class="fas fa-envelope" style="margin-right:7px;"></i>Contact Us
+      </a>
+      <a href="{% url 'raiseacomplaint' %}" class="cta-btn-outline">
+        <i class="fas fa-exclamation-circle" style="margin-right:7px;"></i>Raise a Complaint
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ── FAQ accordion ──
+  function toggleFAQ(el) {
+    const item = el.parentElement;
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+
+  // ── FAQ search ──
+  function searchFAQ(query) {
+    const q = query.toLowerCase().trim();
+    const items = document.querySelectorAll('.faq-item:not(.no-result)');
+    let found = 0;
+    items.forEach(item => {
+      const text = (item.querySelector('h4').textContent + ' ' + (item.dataset.keywords || '') + ' ' + item.querySelector('.faq-answer').textContent).toLowerCase();
+      const match = !q || text.includes(q);
+      item.style.display = match ? '' : 'none';
+      if (match) found++;
+    });
+    document.querySelector('.faq-item.no-result').style.display = (!q || found > 0) ? 'none' : '';
+  }
+
+  // ── Tab switcher ──
+  function openTab(id) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    const tab = document.getElementById('tab-' + id);
+    if (tab) {
+      tab.classList.add('active');
+      // activate matching button
+      document.querySelectorAll('.tab-btn').forEach(b => {
+        if (b.getAttribute('onclick').includes("'" + id + "'")) b.classList.add('active');
+      });
+      // scroll guide into view smoothly
+      document.getElementById('guide').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    return false;
+  }
+</script>
+{% endblock body %}
