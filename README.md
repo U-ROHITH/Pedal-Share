@@ -26,18 +26,20 @@
 
 ```
 Pedal-Share-upgraded-/
-├── apps/
-│   ├── core/          # Base model, shared utilities
-│   ├── users/         # Authentication, profiles, Google SSO
-│   ├── cycles/        # Cycle listings, availability
-│   ├── bookings/      # Booking management
-│   ├── payments/      # Wallet, transactions
-│   └── complaints/    # Complaint system
-├── home/              # Legacy app (landing page)
-├── templates/         # All HTML templates
-├── static/            # CSS, JS, images
-├── project1/          # Django project settings & URLs
-└── manage.py
+├── apps/               # Django applications
+│   ├── core/           # Base models and shared utilities
+│   ├── users/          # Auth, Profiles, and Google SSO logic
+│   ├── cycles/         # Bicycle listings and management
+│   ├── bookings/       # Rental and booking logic
+│   ├── payments/       # Wallet system and transactions
+│   └── complaints/     # Feedback and support system
+├── project1/           # Django project configuration (settings, URLs)
+├── templates/          # Global HTML templates
+├── static/             # Static assets (CSS, JS, Images)
+├── data/               # Database seeds and initial data
+├── manage.py           # Django management script
+├── requirements.txt    # Python dependencies
+└── .env                # Configuration for environment variables
 ```
 
 ## 🚀 Getting Started
