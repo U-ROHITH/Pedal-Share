@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Available Cycles - Pedal Share{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1><i class="fas fa-bicycle"></i> Available Cycles</h1>
+        <p>Browse and book the perfect cycle for your journey</p>
+    </div>
+    
+    <!-- Filter Section -->
+    <div class="filter-section">
+        <form method="GET" class="filter-form">
+            {{ form.as_p }}
+            <div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-search"></i> Filter
+                </button>
+                <a href="{% url 'cycles:available' %}" class="btn btn-outline">
+                    <i class="fas fa-redo"></i> Reset
+                </a>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Cycles Grid -->
+    {% if cycles %}
+        <div class="cycles-grid">
+            {% for cycle in cycles %}
+                <div class="cycle-card {% if not cycle.is_available %}unavailable{% endif %}">
+                    <!-- Image -->
+                    <div class="cycle-image">
+                        {% if cycle.image %}
+                            <img src="{{ cycle.image.url }}" alt="{{ cycle.title }}" style="width: 100%; height: 100%; object-fit: cover;">
+                        {% else %}
+                            <i class="fas fa-bicycle"></i>
+                        {% endif %}
+                        
+                        <span class="cycle-badge">{{ cycle.get_cycle_type_display }}</span>
+                        <span class="cycle-status {% if not cycle.is_available %}unavailable{% endif %}">
+                            {% if cycle.is_available %}Available {% else %} Unavailable{% endif %}
+                        </span>
+                    </div>
+                    
+                    <!-- Content -->
+                    <div class="cycle-body">
+                        <h3 class="cycle-title">{{ cycle.title }}</h3>
+                        <p class="cycle-owner">
+                            <i class="fas fa-user"></i> {{ cycle.owner.username }}
+                        </p>
+                        
+                        <div class="cycle-info">
+                            <div class="cycle-info-item">
+                                <i class="fas fa-star"></i>
+                                <span>{{ cycle.rating }}/5</span>
+                            </div>
+                            <div class="cycle-info-item">
+                                <i class="fas fa-check"></i>
+                                <span>{{ cycle.total_bookings }} bookings</span>
+                            </div>
+                        </div>
+                        
+                        <div class="cycle-location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>{{ cycle.location }}</span>
+                        </div>
+                        
+                        {% if cycle.description %}
+                            <p style="color: var(--gray-600); font-size: 0.9rem; margin-bottom: var(--spacing-md);">
+                                {{ cycle.description|truncatewords:15 }}
+                            </p>
+                        {% endif %}
+                        
+                        <!-- Footer -->
+                        <div class="cycle-footer">
+                            <div class="cycle-price">
+                                ₹{{ cycle.price_per_hour }}
+                                <span class="cycle-price-unit">/hour</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Actions -->
+                        <div class="cycle-actions">
+                            <a href="{% url 'cycles:detail' cycle.id %}" class="btn btn-secondary">
+                                <i class="fas fa-eye"></i> View
+                            </a>
+                            {% if user.is_authenticated and cycle.is_available %}
+                                <a href="{% url 'bookings:book' cycle.id %}" class="btn btn-primary">
+                                    <i class="fas fa-calendar-check"></i> Book Now
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <i class="fas fa-search"></i>
+            <h3>No cycles found</h3>
+            <p>Try adjusting your filters or check back later</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

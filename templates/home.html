@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Pedal Share - Bike Sharing Platform{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 100px 0;">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 style="font-size: 3rem; font-weight: 700; margin-bottom: 20px;">
+                    Share Cycles, Save Money
+                </h1>
+                <p style="font-size: 1.2rem; margin-bottom: 30px; opacity: 0.95;">
+                    Join thousands of riders sharing bikes in your community. It's easy, affordable, and eco-friendly.
+                </p>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'cycles:available' %}" class="btn btn-primary">
+                            <i class="fas fa-bicycle"></i> Browse Cycles
+                        </a>
+                    {% else %}
+                        <a href="{% url 'users:signup' %}" class="btn btn-primary">
+                            <i class="fas fa-user-plus"></i> Get Started
+                        </a>
+                        <a href="{% url 'users:signin' %}" class="btn btn-outline">
+                            <i class="fas fa-sign-in-alt"></i> Sign In
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div style="text-align: center;">
+                    <i class="fas fa-bicycle" style="font-size: 200px; opacity: 0.3;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section style="padding: 80px 0; background: var(--gray-50);">
+    <div class="container">
+        <h2 style="text-align: center; margin-bottom: 60px;">Why Choose Pedal Share?</h2>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px;">
+            <!-- Feature 1 -->
+            <div class="card" style="text-align: center; border: none;">
+                <div style="font-size: 3rem; color: var(--primary); margin-bottom: 20px;">
+                    <i class="fas fa-wallet"></i>
+                </div>
+                <h4>Affordable Pricing</h4>
+                <p>Rent cycles at just ₹20-40 per hour. No hidden charges, transparent pricing.</p>
+            </div>
+            
+            <!-- Feature 2 -->
+            <div class="card" style="text-align: center; border: none;">
+                <div style="font-size: 3rem; color: var(--secondary); margin-bottom: 20px;">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h4>Quick Booking</h4>
+                <p>Book a cycle in 30 seconds. Flexible rental periods from 1 hour to full day.</p>
+            </div>
+            
+            <!-- Feature 3 -->
+            <div class="card" style="text-align: center; border: none;">
+                <div style="font-size: 3rem; color: var(--success); margin-bottom: 20px;">
+                    <i class="fas fa-leaf"></i>
+                </div>
+                <h4>Eco-Friendly</h4>
+                <p>Zero emissions. Every ride contributes to a cleaner environment.</p>
+            </div>
+            
+            <!-- Feature 4 -->
+            <div class="card" style="text-align: center; border: none;">
+                <div style="font-size: 3rem; color: var(--danger); margin-bottom: 20px;">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h4>Safe & Secure</h4>
+                <p>All cycles are regularly maintained. Your wallet balance is always secure.</p>
+            </div>
+            
+            <!-- Feature 5 -->
+            <div class="card" style="text-align: center; border: none;">
+                <div style="font-size: 3rem; color: var(--warning); margin-bottom: 20px;">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <h4>Wide Availability</h4>
+                <p>Find cycles across multiple locations in your city. Pick up and drop off easily.</p>
+            </div>
+            
+            <!-- Feature 6 -->
+            <div class="card" style="text-align: center; border: none;">
+                <div style="font-size: 3rem; color: var(--info); margin-bottom: 20px;">
+                    <i class="fas fa-headset"></i>
+                </div>
+                <h4>24/7 Support</h4>
+                <p>Our friendly support team is here to help anytime. Chat, email, or call us.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section style="background: linear-gradient(135deg, var(--gray-900), var(--gray-800)); color: white; padding: 80px 0; text-align: center;">
+    <div class="container">
+        <h2 style="color: white; margin-bottom: 30px;">Ready to Start Your Journey?</h2>
+        <p style="font-size: 1.1rem; margin-bottom: 40px; opacity: 0.9;">
+            Join our community of sustainable riders today and get ₹50 on your first booking!
+        </p>
+        <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+            {% if user.is_authenticated %}
+                <a href="{% url 'cycles:available' %}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-bicycle"></i> Browse Available Cycles
+                </a>
+            {% else %}
+                <a href="{% url 'users:signup' %}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-pen"></i> Sign Up Now
+                </a>
+                <a href="{% url 'users:signin' %}" class="btn btn-outline btn-lg">
+                    <i class="fas fa-sign-in-alt"></i> Sign In
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section style="padding: 80px 0;">
+    <div class="container">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; text-align: center;">
+            <div>
+                <h3 style="font-size: 2.5rem; color: var(--primary); margin-bottom: 10px;">500+</h3>
+                <p style="color: var(--gray-600); font-size: 1.1rem;">Active Cycles</p>
+            </div>
+            <div>
+                <h3 style="font-size: 2.5rem; color: var(--secondary); margin-bottom: 10px;">2,000+</h3>
+                <p style="color: var(--gray-600); font-size: 1.1rem;">Happy Riders</p>
+            </div>
+            <div>
+                <h3 style="font-size: 2.5rem; color: var(--success); margin-bottom: 10px;">15K+</h3>
+                <p style="color: var(--gray-600); font-size: 1.1rem;">Rides Completed</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

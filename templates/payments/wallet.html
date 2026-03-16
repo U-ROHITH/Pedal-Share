@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Wallet - Pedal Share{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1><i class="fas fa-wallet"></i> My Wallet</h1>
+        <p>Manage your balance and view transaction history</p>
+    </div>
+    
+    <!-- Wallet Card -->
+    <div class="wallet-card">
+        <div class="wallet-card-content">
+            <div class="wallet-label">Available Balance</div>
+            <div class="wallet-balance">₹{{ profile.wallet_balance|floatformat:2 }}</div>
+            <div class="wallet-info">
+                <div class="wallet-detail">
+                    <div class="wallet-label">Total Top-ups</div>
+                    <span>₹{{ total_topups|floatformat:2 }}</span>
+                </div>
+                <div class="wallet-detail">
+                    <div class="wallet-label">Total Spent</div>
+                    <span>₹-----------</span>
+                </div>
+                <div class="wallet-detail">
+                    <div class="wallet-label">Refunds Received</div>
+                    <span>₹{{ total_refunds|floatformat:2 }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Wallet Actions -->
+    <div class="wallet-actions">
+        <a href="{% url 'payments:topup_wallet' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Add Money
+        </a>
+        <a href="{% url 'bookings:my_bookings' %}" class="btn btn-outline">
+            <i class="fas fa-history"></i> Booking History
+        </a>
+    </div>
+    
+    <!-- Transactions -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Recent Transactions</h5>
+        </div>
+        
+        {% if transactions %}
+            <div class="transaction-list">
+                {% for transaction in transactions %}
+                    <div class="transaction-item">
+                        <div class="transaction-icon {% if transaction.transaction_type == 'wallet_topup' %}topup{% elif transaction.transaction_type == 'booking_payment' %}payment{% elif transaction.transaction_type == 'refund' %}refund{% else %}earnings{% endif %}">
+                            {% if transaction.transaction_type == 'wallet_topup' %}
+                                <i class="fas fa-plus"></i>
+                            {% elif transaction.transaction_type == 'booking_payment' %}
+                                <i class="fas fa-shopping-cart"></i>
+                            {% elif transaction.transaction_type == 'refund' %}
+                                <i class="fas fa-undo"></i>
+                            {% else %}
+                                <i class="fas fa-money-bill"></i>
+                            {% endif %}
+                        </div>
+                        <div class="transaction-details">
+                            <div class="transaction-type">{{ transaction.get_transaction_type_display }}</div>
+                            <div class="transaction-time">{{ transaction.created_at|date:"M d, Y H:i" }}</div>
+                        </div>
+                        <div class="transaction-amount {% if transaction.amount > 0 %}positive{% else %}negative{% endif %}">
+                            {% if transaction.amount > 0 %}+{% endif %}₹{{ transaction.amount }}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="card-body">
+                <div class="empty-state">
+                    <i class="fas fa-exchange-alt"></i>
+                    <h5>No transactions yet</h5>
+                    <p>Add money to your wallet to get started</p>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

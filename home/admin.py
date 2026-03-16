@@ -1,7 +1,7 @@
 from django.contrib import admin
-from .models import UserProfile, Cycle, Booking, Transaction
 
-admin.site.register(UserProfile)
-admin.site.register(Cycle)
-admin.site.register(Booking)
-admin.site.register(Transaction)
+# Admin models have been moved to their respective apps
+# - users.admin for UserProfile
+# - cycles.admin for Cycle
+# - bookings.admin for Booking
+# - payments.admin for Transaction

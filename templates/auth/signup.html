@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Sign Up - Pedal Share{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-6 col-lg-5">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-center mb-0">
+                        <i class="fas fa-user-plus"></i> Create Account
+                    </h3>
+                </div>
+                
+                <div class="card-body p-4">
+                    <form method="POST" class="needs-validation">
+                        {% csrf_token %}
+                        
+                        <div class="form-group">
+                            <label for="{{ form.username.id_for_label }}" class="form-label">
+                                Username
+                            </label>
+                            {{ form.username }}
+                            {% if form.username.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.username.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">
+                                Email Address
+                            </label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.email.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="{{ form.password1.id_for_label }}" class="form-label">
+                                Password
+                            </label>
+                            {{ form.password1 }}
+                            {% if form.password1.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.password1.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="{{ form.password2.id_for_label }}" class="form-label">
+                                Confirm Password
+                            </label>
+                            {{ form.password2 }}
+                            {% if form.password2.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.password2.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="terms" required>
+                            <label class="form-check-label" for="terms">
+                                I agree to Terms of Service and Privacy Policy
+                            </label>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-block w-100">
+                            <i class="fas fa-user-plus"></i> Create Account
+                        </button>
+                    </form>
+
+                    <!-- Divider -->
+                    <div style="display: flex; align-items: center; margin: 20px 0;">
+                        <hr style="flex: 1; border: none; border-top: 1px solid #ddd;">
+                        <span style="padding: 0 12px; color: #888; font-size: 0.9rem;">OR</span>
+                        <hr style="flex: 1; border: none; border-top: 1px solid #ddd;">
+                    </div>
+
+                    <!-- Google Sign-Up Button (rendered by Google) -->
+                    <div id="googleBtnContainer" style="display: flex; justify-content: center;"></div>
+                    <div id="googleError" style="color: #dc3545; text-align: center; margin-top: 8px; font-size: 0.85rem; display: none;"></div>
+                </div>
+                
+                <div class="card-footer text-center">
+                    <p class="mb-0">
+                        Already have an account?
+                        <a href="{% url 'users:signin' %}" class="font-weight-bold">Sign In Here</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Google Sign-In Script -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script>
+    function waitForGoogle(cb) {
+        if (typeof google !== 'undefined' && google.accounts) {
+            cb();
+        } else {
+            const interval = setInterval(function() {
+                if (typeof google !== 'undefined' && google.accounts) {
+                    clearInterval(interval);
+                    cb();
+                }
+            }, 200);
+        }
+    }
+
+    waitForGoogle(function() {
+        google.accounts.id.initialize({
+            client_id: '{{ GOOGLE_OAUTH_CLIENT_ID }}',
+            ux_mode: 'redirect',
+            login_uri: window.location.origin + '/auth/google-callback/',
+        });
+
+        google.accounts.id.renderButton(
+            document.getElementById('googleBtnContainer'),
+            {
+                type: 'standard',
+                theme: 'outline',
+                size: 'large',
+                text: 'signup_with',
+                shape: 'rectangular',
+                width: 350,
+            }
+        );
+    });
+</script>
+{% endblock %}

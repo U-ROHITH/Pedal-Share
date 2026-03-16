@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Sign In - Pedal Share{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-6 col-lg-5">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-center mb-0">
+                        <i class="fas fa-sign-in-alt"></i> Sign In
+                    </h3>
+                </div>
+                
+                <div class="card-body p-4">
+                    <form method="POST" class="needs-validation">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.username.id_for_label }}" class="form-label">
+                                Username or Email
+                            </label>
+                            {{ form.username }}
+                            {% if form.username.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.username.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.password.id_for_label }}" class="form-label">
+                                Password
+                            </label>
+                            {{ form.password }}
+                            {% if form.password.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.password.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="rememberMe">
+                                <label class="form-check-label" for="rememberMe">
+                                    Remember me
+                                </label>
+                            </div>
+                            <a href="#" class="text-decoration-none">Forgot password?</a>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-block w-100">
+                            <i class="fas fa-sign-in-alt"></i> Sign In
+                        </button>
+                    </form>
+
+                    <!-- Divider -->
+                    <div style="display: flex; align-items: center; margin: 20px 0;">
+                        <hr style="flex: 1; border: none; border-top: 1px solid #ddd;">
+                        <span style="padding: 0 12px; color: #888; font-size: 0.9rem;">OR</span>
+                        <hr style="flex: 1; border: none; border-top: 1px solid #ddd;">
+                    </div>
+
+                    <!-- Google Sign-In Button (rendered by Google) -->
+                    <div id="googleBtnContainer" style="display: flex; justify-content: center;"></div>
+                    <div id="googleError" style="color: #dc3545; text-align: center; margin-top: 8px; font-size: 0.85rem; display: none;"></div>
+                </div>
+                
+                <div class="card-footer text-center">
+                    <p class="mb-0">
+                        Don't have an account?
+                        <a href="{% url 'users:signup' %}" class="font-weight-bold">Sign Up Here</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Google Sign-In Script -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script>
+    function waitForGoogle(cb) {
+        if (typeof google !== 'undefined' && google.accounts) {
+            cb();
+        } else {
+            const interval = setInterval(function() {
+                if (typeof google !== 'undefined' && google.accounts) {
+                    clearInterval(interval);
+                    cb();
+                }
+            }, 200);
+        }
+    }
+
+    waitForGoogle(function() {
+        google.accounts.id.initialize({
+            client_id: '{{ GOOGLE_OAUTH_CLIENT_ID }}',
+            ux_mode: 'redirect',
+            login_uri: window.location.origin + '/auth/google-callback/',
+        });
+
+        google.accounts.id.renderButton(
+            document.getElementById('googleBtnContainer'),
+            {
+                type: 'standard',
+                theme: 'outline',
+                size: 'large',
+                text: 'continue_with',
+                shape: 'rectangular',
+                width: 350,
+            }
+        );
+    });
+</script>
+{% endblock %}

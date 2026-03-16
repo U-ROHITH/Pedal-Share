@@ -1,0 +1,310 @@
+/* ╔════════════════════════════════════════════════════════════════════════════╗
+   ║                      PAYMENT & WALLET STYLES                                ║
+   ╚════════════════════════════════════════════════════════════════════════════╝ */
+
+/* Wallet Card */
+.wallet-card {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    padding: var(--spacing-2xl);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    margin-bottom: var(--spacing-2xl);
+    position: relative;
+    overflow: hidden;
+}
+
+.wallet-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 500px;
+    height: 500px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+}
+
+.wallet-card-content {
+    position: relative;
+    z-index: 1;
+}
+
+.wallet-label {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: var(--spacing-md);
+}
+
+.wallet-balance {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: var(--spacing-md);
+}
+
+.wallet-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.wallet-detail {
+    font-size: 0.95rem;
+}
+
+.wallet-detail span {
+    display: block;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-top: var(--spacing-xs);
+}
+
+/* Wallet Action Buttons */
+.wallet-actions {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-2xl);
+    flex-wrap: wrap;
+}
+
+.wallet-actions .btn {
+    flex: 1;
+    min-width: 200px;
+}
+
+/* Transaction List */
+.transaction-list {
+    background: white;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+}
+
+.transaction-item {
+    padding: var(--spacing-lg);
+    border-bottom: 1px solid var(--gray-200);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color var(--transition-fast);
+}
+
+.transaction-item:hover {
+    background-color: var(--gray-50);
+}
+
+.transaction-item:last-child {
+    border-bottom: none;
+}
+
+.transaction-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: var(--spacing-lg);
+    font-size: 1.5rem;
+}
+
+.transaction-icon.topup {
+    background-color: #dbeafe;
+    color: #0284c7;
+}
+
+.transaction-icon.payment {
+    background-color: #fce7f3;
+    color: #ec4899;
+}
+
+.transaction-icon.refund {
+    background-color: #dcfce7;
+    color: #16a34a;
+}
+
+.transaction-icon.earnings {
+    background-color: #fef3c7;
+    color: #ca8a04;
+}
+
+.transaction-details {
+    flex: 1;
+}
+
+.transaction-type {
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-xs);
+}
+
+.transaction-time {
+    font-size: 0.85rem;
+    color: var(--gray-600);
+}
+
+.transaction-amount {
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-align: right;
+}
+
+.transaction-amount.positive {
+    color: var(--success);
+}
+
+.transaction-amount.negative {
+    color: var(--danger);
+}
+
+/* Payment Form */
+.payment-section {
+    background: white;
+    padding: var(--spacing-2xl);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    margin-bottom: var(--spacing-2xl);
+}
+
+.payment-header {
+    margin-bottom: var(--spacing-2xl);
+    padding-bottom: var(--spacing-lg);
+    border-bottom: 2px solid var(--gray-200);
+}
+
+.payment-header h2 {
+    margin: 0;
+}
+
+.amount-presets {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-2xl);
+}
+
+.amount-preset-btn {
+    padding: var(--spacing-md);
+    border: 2px solid var(--gray-300);
+    border-radius: var(--radius-md);
+    background: white;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-weight: 600;
+    text-align: center;
+}
+
+.amount-preset-btn:hover {
+    border-color: var(--primary);
+    background-color: var(--primary-light);
+    color: var(--primary);
+}
+
+.amount-preset-btn.active {
+    background-color: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+/* Checkout Summary */
+.checkout-summary {
+    background: var(--gray-50);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--gray-200);
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-md);
+    font-size: 0.95rem;
+}
+
+.summary-row.total {
+    border-top: 2px solid var(--gray-300);
+    padding-top: var(--spacing-md);
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--primary);
+}
+
+.payment-methods {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-2xl);
+}
+
+.payment-method {
+    padding: var(--spacing-lg);
+    border: 2px solid var(--gray-300);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    text-align: center;
+}
+
+.payment-method:hover {
+    border-color: var(--primary);
+    background-color: var(--primary-light);
+}
+
+.payment-method.active {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}
+
+.payment-method i {
+    font-size: 2rem;
+    margin-bottom: var(--spacing-sm);
+}
+
+.payment-method-name {
+    font-weight: 600;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+    .wallet-balance {
+        font-size: 2rem;
+    }
+
+    .wallet-actions {
+        flex-direction: column;
+    }
+
+    .wallet-actions .btn {
+        min-width: auto;
+    }
+
+    .transaction-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .transaction-icon {
+        margin-right: 0;
+        margin-bottom: var(--spacing-md);
+    }
+
+    .transaction-amount {
+        text-align: left;
+        width: 100%;
+        margin-top: var(--spacing-md);
+    }
+
+    .amount-presets {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .payment-methods {
+        grid-template-columns: 1fr;
+    }
+}

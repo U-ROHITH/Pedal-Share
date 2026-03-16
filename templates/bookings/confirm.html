@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Confirm Booking - Pedal Share{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3 class="mb-0">
+                        <i class="fas fa-clipboard-check"></i> Booking Details
+                    </h3>
+                </div>
+                
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            {% if cycle.image %}
+                                <img src="{{ cycle.image.url }}" alt="{{ cycle.title }}" class="img-fluid" style="border-radius: var(--radius-lg); max-height: 250px; object-fit: cover; width: 100%;">
+                            {% else %}
+                                <div style="background: linear-gradient(135deg, var(--gray-200), var(--gray-300)); height: 250px; border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-bicycle" style="font-size: 3rem; color: var(--gray-500);"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <h4>{{ cycle.title }}</h4>
+                            <p class="text-muted">By {{ cycle.owner.username }}</p>
+                            <div class="mb-3">
+                                <span class="badge bg-primary">{{ cycle.get_cycle_type_display }}</span>
+                                <span class="badge bg-secondary">{{ cycle.color }}</span>
+                            </div>
+                            <p>
+                                <i class="fas fa-map-marker-alt text-danger"></i>
+                                <strong>Location:</strong> {{ cycle.location }}
+                            </p>
+                            <p>
+                                <i class="fas fa-random text-warning"></i>
+                                <strong>Available:</strong> {{ cycle.available_from|time:"H:i" }} - {{ cycle.available_until|time:"H:i" }}
+                            </p>
+                            <p>
+                                <strong class="text-secondary" style="font-size: 1.5rem;">₹{{ cycle.price_per_hour }}/hour</strong>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Booking Form -->
+                    <form method="POST" class="mt-4">
+                        {% csrf_token %}
+                        
+                        <h5 class="mb-3">Select Your Booking Time</h5>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.booking_date.id_for_label }}" class="form-label">
+                                        Date
+                                    </label>
+                                    {{ form.booking_date }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.pickup_time.id_for_label }}" class="form-label">
+                                        Pick-up Time
+                                    </label>
+                                    {{ form.pickup_time }}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.dropoff_time.id_for_label }}" class="form-label">
+                                        Drop-off Time
+                                    </label>
+                                    {{ form.dropoff_time }}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="{{ form.notes.id_for_label }}" class="form-label">
+                                Special Requests (Optional)
+                            </label>
+                            {{ form.notes }}
+                        </div>
+                        
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-check"></i> Confirm Booking
+                            </button>
+                            <a href="{% url 'cycles:available' %}" class="btn btn-outline">
+                                <i class="fas fa-arrow-left"></i> Back
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Price Summary -->
+        <div class="col-lg-4">
+            <div class="card" style="position: sticky; top: 100px;">
+                <div class="card-header">
+                    <h5 class="mb-0">Price Estimate</h5>
+                </div>
+                <div class="card-body">
+                    <div class="checkout-summary">
+                        <div class="summary-row">
+                            <span>Price per hour:</span>
+                            <span>₹{{ cycle.price_per_hour }}</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Estimated duration:</span>
+                            <span id="duration">----- hours</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Total Price:</span>
+                            <span id="totalPrice">₹0.00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function calculatePrice() {
+        const pickupTime = document.querySelector('[name="pickup_time"]').value;
+        const dropoffTime = document.querySelector('[name="dropoff_time"]').value;
+        const pricePerHour = {{ cycle.price_per_hour }};
+        
+        if (pickupTime && dropoffTime) {
+            const [hStart, mStart] = pickupTime.split(':').map(Number);
+            const [hEnd, mEnd] = dropoffTime.split(':').map(Number);
+            const duration = Math.max((hEnd - hStart) + (mEnd - mStart) / 60, 1);
+            document.getElementById('duration').textContent = duration.toFixed(1) + ' hours';
+            document.getElementById('totalPrice').textContent = '₹' + (duration * pricePerHour).toFixed(2);
+        }
+    }
+    
+    document.querySelector('[name="pickup_time"]')?.addEventListener('change', calculatePrice);
+    document.querySelector('[name="dropoff_time"]')?.addEventListener('change', calculatePrice);
+</script>
+{% endblock %}
