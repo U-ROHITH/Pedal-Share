@@ -33,8 +33,8 @@ urlpatterns = [
     path('payments/', include('apps.payments.urls')),
     path('complaints/', include('apps.complaints.urls')),
     
-    # Legacy app (will be deprecated)
-    path('legacy/', include('home.urls')),
+    # Static pages (help, about, contact)
+    path('', include('apps.core.urls')),
 ]
 
 # Serve media files in development

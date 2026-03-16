@@ -1,0 +1,400 @@
+{% extends "base.html" %}
+
+{% block title %}About Us - PedalShare{% endblock %}
+
+{% block content %}
+<style>
+  .about-page {
+    font-family: 'Poppins', sans-serif;
+    background: #f3f3f5;
+  }
+
+  /* Hero */
+  .about-hero {
+    background: linear-gradient(135deg, #34495E 0%, #2575fc 100%);
+    color: #fff;
+    padding: 70px 40px;
+    text-align: center;
+  }
+
+  .about-hero h1 {
+    font-size: 2.6rem;
+    font-weight: 700;
+    margin-bottom: 14px;
+  }
+
+  .about-hero h1 span { color: #1ABC9C; }
+
+  .about-hero p {
+    font-size: 1.05rem;
+    opacity: 0.85;
+    max-width: 580px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  /* Mission */
+  .mission-section {
+    background: #fff;
+    padding: 70px 40px;
+  }
+
+  .mission-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+
+  .mission-icon-wrap {
+    background: linear-gradient(135deg, #34495E, #2575fc);
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 280px;
+  }
+
+  .mission-icon-wrap i {
+    font-size: 8rem;
+    color: rgba(255,255,255,0.85);
+  }
+
+  .mission-text h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #34495E;
+    margin-bottom: 16px;
+  }
+
+  .mission-text h2 span { color: #1ABC9C; }
+
+  .mission-text p {
+    font-size: 0.95rem;
+    color: #5a6a7a;
+    line-height: 1.8;
+    margin-bottom: 14px;
+  }
+
+  /* Values */
+  .values-section {
+    background: #f3f3f5;
+    padding: 70px 40px;
+  }
+
+  .section-heading {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .section-heading h2 {
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: #34495E;
+    margin-bottom: 8px;
+  }
+
+  .section-heading .bar {
+    width: 56px;
+    height: 4px;
+    background: #1ABC9C;
+    border-radius: 2px;
+    margin: 10px auto;
+  }
+
+  .section-heading p {
+    font-size: 0.95rem;
+    color: #7f8c8d;
+  }
+
+  .values-grid {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 24px;
+  }
+
+  .value-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 32px 24px;
+    text-align: center;
+    box-shadow: 0 3px 16px rgba(0,0,0,0.07);
+    transition: transform 0.25s, box-shadow 0.25s;
+  }
+
+  .value-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+  }
+
+  .value-icon {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1ABC9C, #16A085);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 18px;
+  }
+
+  .value-icon i { font-size: 1.4rem; color: #fff; }
+
+  .value-card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #34495E;
+    margin-bottom: 8px;
+  }
+
+  .value-card p {
+    font-size: 0.86rem;
+    color: #7f8c8d;
+    line-height: 1.6;
+  }
+
+  /* Stats */
+  .stats-section {
+    background: linear-gradient(135deg, #34495E, #2c3e50);
+    padding: 60px 40px;
+  }
+
+  .stats-grid {
+    max-width: 900px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 32px;
+    text-align: center;
+    color: #fff;
+  }
+
+  .stat-num {
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: #1ABC9C;
+    display: block;
+  }
+
+  .stat-lbl {
+    font-size: 0.88rem;
+    opacity: 0.8;
+  }
+
+  /* Team */
+  .team-section {
+    background: #fff;
+    padding: 70px 40px;
+  }
+
+  .team-grid {
+    max-width: 900px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 28px;
+  }
+
+  .team-card {
+    text-align: center;
+    padding: 28px 20px;
+    background: #f8f9fa;
+    border-radius: 14px;
+    transition: transform 0.2s;
+  }
+
+  .team-card:hover { transform: translateY(-4px); }
+
+  .team-avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 14px;
+    font-size: 1.8rem;
+    color: #fff;
+  }
+
+  .team-card h4 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #34495E;
+    margin-bottom: 4px;
+  }
+
+  .team-card span {
+    font-size: 0.78rem;
+    color: #1ABC9C;
+    font-weight: 600;
+  }
+
+  /* CTA */
+  .about-cta {
+    background: linear-gradient(135deg, #2575fc, #34495E);
+    padding: 60px 40px;
+    text-align: center;
+    color: #fff;
+  }
+
+  .about-cta h2 { font-size: 1.8rem; font-weight: 700; margin-bottom: 12px; }
+  .about-cta p  { font-size: 0.95rem; opacity: 0.85; margin-bottom: 28px; }
+
+  .cta-btn {
+    background: #1ABC9C;
+    color: #fff !important;
+    text-decoration: none !important;
+    padding: 12px 32px;
+    border-radius: 30px;
+    font-size: 0.97rem;
+    font-weight: 600;
+    transition: opacity 0.2s;
+  }
+
+  .cta-btn:hover { opacity: 0.88; }
+
+  @media (max-width: 768px) {
+    .mission-inner { grid-template-columns: 1fr; }
+    .mission-icon-wrap { height: 160px; }
+    .mission-icon-wrap i { font-size: 5rem; }
+    .about-hero h1 { font-size: 1.8rem; }
+  }
+</style>
+
+<div class="about-page">
+
+  <!-- Hero -->
+  <div class="about-hero">
+    <h1>About <span>PedalShare</span></h1>
+    <p>We're on a mission to make campus commuting smarter, greener, and more affordable — one pedal at a time.</p>
+  </div>
+
+  <!-- Mission -->
+  <div class="mission-section">
+    <div class="mission-inner">
+      <div class="mission-icon-wrap">
+        <i class="fas fa-bicycle"></i>
+      </div>
+      <div class="mission-text">
+        <h2>Our <span>Mission</span></h2>
+        <p>PedalShare was born out of a simple idea — students shouldn't have to walk long distances across campus or spend money on auto-rickshaws when there are perfectly good cycles sitting idle in hostels.</p>
+        <p>We connect cycle owners with riders in a seamless, wallet-based marketplace. Owners earn passive income, riders save money, and the planet breathes a little easier.</p>
+        <p>Every ride on PedalShare is a step toward a more sustainable, connected campus community.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Values -->
+  <div class="values-section">
+    <div class="section-heading">
+      <h2>What We Stand For</h2>
+      <div class="bar"></div>
+      <p>The principles that guide every decision we make.</p>
+    </div>
+    <div class="values-grid">
+      <div class="value-card">
+        <div class="value-icon"><i class="fas fa-leaf"></i></div>
+        <h3>Sustainability</h3>
+        <p>Zero emissions, zero fuel, zero guilt. Cycling is the greenest way to get around.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon"><i class="fas fa-rupee-sign"></i></div>
+        <h3>Affordability</h3>
+        <p>Rides starting at ₹15/hr. We believe sustainable transport should be accessible to every student.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon"><i class="fas fa-shield-alt"></i></div>
+        <h3>Trust & Safety</h3>
+        <p>Every owner is a verified student. Your wallet is secured and every transaction is logged.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon"><i class="fas fa-bolt"></i></div>
+        <h3>Simplicity</h3>
+        <p>Book a cycle in under 60 seconds. No paperwork, no deposits, no friction.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-section">
+    <div class="stats-grid">
+      <div>
+        <span class="stat-num">500+</span>
+        <span class="stat-lbl">Cycles Listed</span>
+      </div>
+      <div>
+        <span class="stat-num">1,200+</span>
+        <span class="stat-lbl">Happy Students</span>
+      </div>
+      <div>
+        <span class="stat-num">98%</span>
+        <span class="stat-lbl">Satisfaction Rate</span>
+      </div>
+      <div>
+        <span class="stat-num">₹50K+</span>
+        <span class="stat-lbl">Earned by Owners</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Team -->
+  <div class="team-section">
+    <div class="section-heading">
+      <h2>The Team</h2>
+      <div class="bar"></div>
+      <p>Students building for students.</p>
+    </div>
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-avatar" style="background:linear-gradient(135deg,#2575fc,#34495E);">
+          <i class="fas fa-user"></i>
+        </div>
+        <h4>Rohith U</h4>
+        <span>Founder & Developer</span>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar" style="background:linear-gradient(135deg,#1ABC9C,#16A085);">
+          <i class="fas fa-user"></i>
+        </div>
+        <h4>Design Team</h4>
+        <span>UI/UX</span>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar" style="background:linear-gradient(135deg,#e67e22,#d35400);">
+          <i class="fas fa-user"></i>
+        </div>
+        <h4>Backend Team</h4>
+        <span>Engineering</span>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar" style="background:linear-gradient(135deg,#9b59b6,#8e44ad);">
+          <i class="fas fa-user"></i>
+        </div>
+        <h4>Support Team</h4>
+        <span>Customer Success</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="about-cta">
+    <h2>Ready to Join the Movement?</h2>
+    <p>Sign up today, get ₹500 free, and start riding sustainably.</p>
+    {% if user.is_authenticated %}
+      <a href="{% url 'cycles:available' %}" class="cta-btn">
+        <i class="fas fa-bicycle" style="margin-right:8px;"></i>Browse Cycles
+      </a>
+    {% else %}
+      <a href="{% url 'users:signup' %}" class="cta-btn">
+        <i class="fas fa-user-plus" style="margin-right:8px;"></i>Create Free Account
+      </a>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock content %}

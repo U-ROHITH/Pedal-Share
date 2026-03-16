@@ -40,12 +40,13 @@ class Booking(BaseModel):
     def calculate_duration(self):
         """Calculate booking duration in hours"""
         if self.dropoff_time:
-            from datetime import combine, datetime as dt
-            pickup = combine(self.booking_date, self.pickup_time)
-            dropoff = combine(self.booking_date, self.dropoff_time)
+            pickup = datetime.combine(self.booking_date, self.pickup_time)
+            dropoff = datetime.combine(self.booking_date, self.dropoff_time)
             duration = (dropoff - pickup).total_seconds() / 3600
-            return max(1, duration)  # Minimum 1 hour
-        return 0
+            if duration <= 0:
+                duration += 24  # Handle possible wrap-around
+            return max(Decimal('1.0'), Decimal(str(duration)))  # Minimum 1 hour
+        return Decimal('1.00')
 
     def calculate_total_price(self):
         """Calculate total booking price"""

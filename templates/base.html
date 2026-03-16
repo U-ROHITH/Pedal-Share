@@ -1,202 +1,285 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cycle Sharing - Advanced Navigation Bar</title>
+    <title>{% block title %}PedalShare - Campus Cycle Sharing{% endblock %}</title>
     <!-- Bootstrap 4 CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
     <style>
-        /* Reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --nav-bg: #1e293b;
+            --nav-accent: #1ABC9C;
+            --nav-text: #f8fafc;
+            --primary: #2575fc;
         }
 
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #f4f4f4;
+            background-color: #f8fafc;
+            overflow-x: hidden;
         }
 
-        /* Navbar Styling — override Bootstrap navbar defaults */
+        .no-scroll {
+            overflow: hidden;
+        }
+
+        /* Navbar Layout */
         .navbar {
+            background-color: var(--nav-bg) !important;
+            padding: 12px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 15px 30px;
-            background-color: #34495E !important;
-            color: white;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 0;
+            justify-content: space-between;
+            flex-grow: 1;
+            margin-left: 40px;
         }
 
         .nav-links {
             display: flex;
             list-style: none;
-        }
-
-        .nav-links li {
-            margin-right: 20px;
+            margin: 0;
+            padding: 0;
+            gap: 25px;
         }
 
         .nav-links a {
-            text-decoration: none !important;
-            color: white !important;
-            font-size: 16px;
+            color: var(--nav-text) !important;
             font-weight: 500;
+            font-size: 0.95rem;
+            text-decoration: none !important;
+            transition: color 0.3s ease;
             position: relative;
-            transition: color 0.3s;
         }
 
         .nav-links a::after {
             content: '';
             position: absolute;
+            bottom: -5px;
             left: 0;
-            bottom: -4px;
-            width: 100%;
+            width: 0;
             height: 2px;
-            background-color: #1ABC9C;
-            transform: scaleX(0);
-            transition: transform 0.3s;
+            background-color: var(--nav-accent);
+            transition: width 0.3s ease;
         }
 
         .nav-links a:hover::after {
-            transform: scaleX(1);
+            width: 100%;
         }
 
         .nav-links a:hover {
-            color: #1ABC9C !important;
+            color: var(--nav-accent) !important;
         }
 
+        /* Auth Buttons */
         .auth-buttons {
             display: flex;
             align-items: center;
+            gap: 12px;
         }
 
-        .wallet-container a {
-            display: flex;
-            align-items: center;
-            color: white !important;
+        .btn-nav {
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            font-weight: 600;
             text-decoration: none !important;
-            font-size: 14px;
-            font-weight: bold;
-            margin-right: 15px;
-            background-color: transparent !important;
-            border: none;
-            padding: 0;
-        }
-
-        .wallet-container i {
-            font-size: 24px;
-            color: red;
-            margin-right: 8px; /* Spacing between icon and text */
-        }
-
-        .auth-buttons a {
-            text-decoration: none !important;
-            color: white !important;
-            background-color: #1ABC9C;
-            padding: 8px 15px;
-            border-radius: 20px;
-            margin-left: 10px;
-            font-size: 14px;
-            font-weight: bold;
-            transition: background-color 0.3s;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
         }
 
-        .auth-buttons a:hover {
-            background-color: #16A085;
-            color: white !important;
+        .btn-signin { color: #fff !important; border: 1.5px solid rgba(255,255,255,0.2); }
+        .btn-signin:hover { background: rgba(255,255,255,0.1); }
+        
+        .btn-signup, .btn-cycles { background-color: var(--nav-accent); color: #fff !important; }
+        .btn-signup:hover, .btn-cycles:hover { background-color: #16A085; transform: translateY(-1px); }
+
+        .btn-bookings { background-color: var(--primary); color: #fff !important; }
+        .btn-bookings:hover { background-color: #1a63d9; transform: translateY(-1px); }
+
+        .btn-logout { background-color: transparent; color: #cbd5e1 !important; border: 1px solid #475569; }
+        .btn-logout:hover { background-color: #ef4444; color: #fff !important; border-color: #ef4444; }
+
+        .wallet-nav a {
+            padding: 8px 14px;
+            background: rgba(26, 188, 156, 0.1);
+            border-radius: 8px;
+            color: #fff !important;
+            font-weight: 700;
+            text-decoration: none !important;
+            border: 1px solid rgba(26, 188, 156, 0.3);
+            display: flex;
+            align-items: center;
         }
 
-        /* Mobile Responsiveness */
-        @media (max-width: 768px) {
-            .nav-links {
-                flex-direction: column;
-                align-items: flex-start;
-                background-color: #34495E;
-                position: absolute;
-                top: 60px;
-                left: 0;
-                width: 100%;
-                display: none;
-            }
-
-            .nav-links.active {
-                display: flex;
-            }
-
-            .nav-links li {
-                margin: 15px 0;
-            }
-
-            .navbar .menu-toggle {
-                display: block;
-                cursor: pointer;
-                font-size: 24px;
-            }
-        }
-
-        /* Menu Toggle for Mobile */
+        /* Mobile Menu Toggle */
         .menu-toggle {
             display: none;
+            width: 30px;
+            height: 20px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .menu-toggle span {
+            display: block;
+            position: absolute;
+            height: 3px;
+            width: 100%;
+            background: #fff;
+            border-radius: 9px;
+            transition: .25s ease-in-out;
+        }
+
+        .menu-toggle span:nth-child(1) { top: 0px; }
+        .menu-toggle span:nth-child(2) { top: 8px; }
+        .menu-toggle span:nth-child(3) { top: 16px; }
+
+        .menu-toggle.active span:nth-child(1) { top: 8px; transform: rotate(135deg); }
+        .menu-toggle.active span:nth-child(2) { opacity: 0; left: -60px; }
+        .menu-toggle.active span:nth-child(3) { top: 8px; transform: rotate(-135deg); }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 991px) {
+            .menu-toggle { display: block; }
+
+            .nav-container {
+                position: fixed;
+                top: 60px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 60px);
+                background-color: var(--nav-bg);
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: center;
+                margin: 0;
+                padding: 40px 20px;
+                transition: left 0.4s ease;
+                gap: 40px;
+                overflow-y: auto;
+            }
+
+            .nav-container.active {
+                left: 0;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                align-items: center;
+                gap: 30px;
+            }
+
+            .nav-links a { font-size: 1.2rem; }
+
+            .auth-buttons {
+                flex-direction: column;
+                width: 100%;
+                max-width: 300px;
+                gap: 15px;
+            }
+
+            .btn-nav {
+                width: 100%;
+                justify-content: center;
+                padding: 12px;
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
 <body>
     <nav class="navbar">
-        <div class="menu-toggle">&#9776;</div>
-        <ul class="nav-links">
-            <li><a href="{% url 'home' %}">Home</a></li>
-            <li><a href="{% url 'cycles:available' %}">Available Cycles</a></li>
-            <li><a href="#">Help</a></li>
-            <li><a href="#">About Us</a></li>
-            <li><a href="#">Contact Us</a></li>
-        </ul>
+        <div class="container-fluid px-lg-5">
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+                <i class="fas fa-bicycle mr-2" style="color: #1ABC9C; font-size: 1.5rem;"></i>
+                <span style="font-weight: 700; font-size: 1.4rem; color: #fff; letter-spacing: -0.5px;">PedalShare</span>
+            </a>
 
-        <div class="auth-buttons">
-            {% if user.is_authenticated %}
-                <a href="{% url 'bookings:my_bookings' %}" style="background-color:#2575fc !important;">
-                    <i class="fas fa-list-alt" style="margin-right:5px;"></i>My Bookings
-                </a>
-                <a href="{% url 'cycles:my_cycles' %}" style="background-color:#1ABC9C !important;">
-                    <i class="fas fa-bicycle" style="margin-right:5px;"></i>My Cycles
-                </a>
-                <div class="wallet-container">
-                    <a href="{% url 'payments:wallet' %}">
-                        <i class="fas fa-wallet"></i>
-                        <span>₹{% if user_profile %}{{ user_profile.wallet_balance|floatformat:0 }}{% else %}0{% endif %}</span>
-                    </a>
+            <div class="menu-toggle" id="mobile-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <div class="nav-container">
+                <ul class="nav-links">
+                    <li><a href="{% url 'home' %}">Home</a></li>
+                    <li><a href="{% url 'cycles:available' %}">Available Cycles</a></li>
+                    <li><a href="{% url 'pages:help' %}">Help</a></li>
+                    <li><a href="{% url 'pages:aboutus' %}">About Us</a></li>
+                    <li><a href="{% url 'pages:contactus' %}">Contact Us</a></li>
+                </ul>
+
+                <div class="auth-buttons">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'bookings:my_bookings' %}" class="btn-nav btn-bookings">
+                            <i class="fas fa-list-alt mr-1"></i>My Bookings
+                        </a>
+                        <a href="{% url 'cycles:my_cycles' %}" class="btn-nav btn-cycles">
+                            <i class="fas fa-bicycle mr-1"></i>My Cycles
+                        </a>
+                        <div class="wallet-nav">
+                            <a href="{% url 'payments:wallet' %}">
+                                <i class="fas fa-wallet" style="color: #1ABC9C;"></i>
+                                <span class="ml-1">₹{% if user_profile %}{{ user_profile.wallet_balance|floatformat:0 }}{% else %}0{% endif %}</span>
+                            </a>
+                        </div>
+                        <a href="{% url 'users:signout' %}" class="btn-nav btn-logout">
+                            <i class="fas fa-sign-out-alt mr-1"></i>Logout
+                        </a>
+                    {% else %}
+                        <a href="{% url 'users:signin' %}" class="btn-nav btn-signin">Sign In</a>
+                        <a href="{% url 'users:signup' %}" class="btn-nav btn-signup">Sign Up</a>
+                    {% endif %}
                 </div>
-                <a href="{% url 'users:signout' %}">
-                    <i class="fas fa-sign-out-alt" style="margin-right:5px;"></i>Logout
-                </a>
-            {% else %}
-                <a href="{% url 'users:signin' %}">Sign In</a>
-                <a href="{% url 'users:signup' %}">Sign Up</a>
-            {% endif %}
+            </div>
         </div>
     </nav>
-{% block content %} 
 
-{% endblock %}
+    <div class="main-content">
+        {% block content %}{% endblock %}
+    </div>
+
     <!-- Bootstrap 4 JS (jQuery + Popper required) -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
     <script>
-        // JavaScript for Menu Toggle
-        const menuToggle = document.querySelector('.menu-toggle');
-        const navLinks = document.querySelector('.nav-links');
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.getElementById('mobile-menu');
+            const navContainer = document.querySelector('.nav-container');
+            const body = document.body;
 
-        menuToggle.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
+            menuToggle.addEventListener('click', () => {
+                menuToggle.classList.toggle('active');
+                navContainer.classList.toggle('active');
+                body.classList.toggle('no-scroll');
+            });
+
+            // Close menu when clicking a link
+            const navLinks = document.querySelectorAll('.nav-links a, .auth-buttons a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    menuToggle.classList.remove('active');
+                    navContainer.classList.remove('active');
+                    body.classList.remove('no-scroll');
+                });
+            });
         });
     </script>
 </body>

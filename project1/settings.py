@@ -52,9 +52,6 @@ INSTALLED_APPS = [
     'apps.bookings.apps.BookingsConfig',
     'apps.payments.apps.PaymentsConfig',
     'apps.complaints.apps.ComplaintsConfig',
-    
-    # Legacy app
-    'home',
 ]
 
 MIDDLEWARE = [
@@ -81,7 +78,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'home.context_processors.user_profile',
+                'apps.core.context_processors.user_profile',
             ],
         },
     },

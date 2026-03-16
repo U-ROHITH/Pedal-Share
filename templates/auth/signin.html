@@ -4,83 +4,301 @@
 {% block title %}Sign In - Pedal Share{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="row justify-content-center mt-5">
-        <div class="col-md-6 col-lg-5">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="text-center mb-0">
-                        <i class="fas fa-sign-in-alt"></i> Sign In
-                    </h3>
-                </div>
-                
-                <div class="card-body p-4">
-                    <form method="POST" class="needs-validation">
-                        {% csrf_token %}
-                        
-                        <div class="mb-3">
-                            <label for="{{ form.username.id_for_label }}" class="form-label">
-                                Username or Email
-                            </label>
-                            {{ form.username }}
-                            {% if form.username.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {{ form.username.errors.0 }}
-                                </div>
-                            {% endif %}
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="{{ form.password.id_for_label }}" class="form-label">
-                                Password
-                            </label>
-                            {{ form.password }}
-                            {% if form.password.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {{ form.password.errors.0 }}
-                                </div>
-                            {% endif %}
-                        </div>
-                        
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="rememberMe">
-                                <label class="form-check-label" for="rememberMe">
-                                    Remember me
-                                </label>
-                            </div>
-                            <a href="#" class="text-decoration-none">Forgot password?</a>
-                        </div>
-                        
-                        <button type="submit" class="btn btn-primary btn-block w-100">
-                            <i class="fas fa-sign-in-alt"></i> Sign In
-                        </button>
-                    </form>
+<style>
+    .split-container {
+        display: flex;
+        min-height: calc(100vh - 68px);
+        background-color: #fff;
+    }
 
-                    <!-- Divider -->
-                    <div style="display: flex; align-items: center; margin: 20px 0;">
-                        <hr style="flex: 1; border: none; border-top: 1px solid #ddd;">
-                        <span style="padding: 0 12px; color: #888; font-size: 0.9rem;">OR</span>
-                        <hr style="flex: 1; border: none; border-top: 1px solid #ddd;">
+    .brand-side {
+        flex: 1;
+        background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        color: white;
+        padding: 80px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .brand-side::before {
+        content: '';
+        position: absolute;
+        top: -100px;
+        right: -100px;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(26, 188, 156, 0.1) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+
+    .brand-side::after {
+        content: '';
+        position: absolute;
+        bottom: -50px;
+        left: -50px;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(37, 117, 252, 0.1) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+
+    .brand-content {
+        position: relative;
+        z-index: 10;
+        max-width: 500px;
+    }
+
+    .brand-logo {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #1ABC9C;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .brand-title {
+        font-size: 3rem;
+        font-weight: 700;
+        line-height: 1.1;
+        margin-bottom: 1.5rem;
+    }
+
+    .brand-desc {
+        font-size: 1.1rem;
+        color: #94a3b8;
+        margin-bottom: 3rem;
+        line-height: 1.6;
+    }
+
+    .feature-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .feature-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        font-weight: 500;
+    }
+
+    .feature-icon {
+        width: 32px;
+        height: 32px;
+        background: rgba(26, 188, 156, 0.1);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+        color: #1ABC9C;
+    }
+
+    .form-side {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px;
+        background-color: #f8fafc;
+    }
+
+    .auth-card {
+        width: 100%;
+        max-width: 450px;
+        background: white;
+        padding: 50px;
+        border-radius: 24px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.05);
+    }
+
+    .auth-header h2 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 10px;
+    }
+
+    .auth-header p {
+        color: #64748b;
+        margin-bottom: 35px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #475569;
+        margin-bottom: 8px;
+    }
+
+    .form-control {
+        height: 52px;
+        border-radius: 12px;
+        border: 1.5px solid #e2e8f0;
+        padding: 0 20px;
+        font-family: inherit;
+        transition: all 0.3s;
+    }
+
+    .form-control:focus {
+        border-color: #1ABC9C;
+        box-shadow: 0 0 0 4px rgba(26, 188, 156, 0.1);
+    }
+
+    .btn-auth {
+        height: 52px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 1rem;
+        background-color: #1e293b;
+        color: white;
+        border: none;
+        width: 100%;
+        margin-top: 10px;
+        transition: all 0.3s;
+    }
+
+    .btn-auth:hover {
+        background-color: #0f172a;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(15, 23, 42, 0.15);
+    }
+
+    .divider {
+        display: flex;
+        align-items: center;
+        margin: 30px 0;
+        color: #94a3b8;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .divider::before, .divider::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background-color: #e2e8f0;
+    }
+
+    .divider span {
+        padding: 0 15px;
+    }
+
+    .google-btn-wrapper {
+        display: flex;
+        justify-content: center;
+    }
+
+    .auth-footer {
+        text-align: center;
+        margin-top: 30px;
+        color: #64748b;
+        font-size: 0.95rem;
+    }
+
+    .auth-footer a {
+        color: #1ABC9C;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    @media (max-width: 991px) {
+        .brand-side { display: none; }
+        .form-side { padding: 20px; background-color: white; }
+        .auth-card { box-shadow: none; padding: 20px; }
+        .split-container { min-height: calc(100vh - 60px); }
+    }
+</style>
+
+<div class="split-container">
+    <div class="brand-side">
+        <div class="brand-content">
+            <div class="brand-logo">
+                <i class="fas fa-bicycle mr-3"></i> PedalShare
+            </div>
+            <h1 class="brand-title">Welcome back to PedalShare</h1>
+            <p class="brand-desc">Your go-to platform for affordable, eco-friendly campus commuting. Sign in to access your dashboard and manage your rides.</p>
+            
+            <ul class="feature-list">
+                <li class="feature-item">
+                    <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+                    Book a cycle in under 60 seconds
+                </li>
+                <li class="feature-item">
+                    <div class="feature-icon"><i class="fas fa-tag"></i></div>
+                    Starting at just ₹15 / hour
+                </li>
+                <li class="feature-item">
+                    <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+                    Secure wallet & verified owners
+                </li>
+                <li class="feature-item">
+                    <div class="feature-icon"><i class="fas fa-leaf"></i></div>
+                    Zero emissions, 100% eco-friendly
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="form-side">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h2>Sign In</h2>
+                <p>Enter your credentials to access your account</p>
+            </div>
+
+            <form method="POST">
+                {% csrf_token %}
+                
+                <div class="form-group mb-4">
+                    <label class="form-label">Username or Email</label>
+                    {{ form.username }}
+                    {% if form.username.errors %}
+                        <div class="invalid-feedback">{{ form.username.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group mb-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <label class="form-label">Password</label>
+                        <a href="#" class="small text-muted mb-2 font-weight-500">Forgot?</a>
                     </div>
+                    {{ form.password }}
+                    {% if form.password.errors %}
+                        <div class="invalid-feedback">{{ form.password.errors.0 }}</div>
+                    {% endif %}
+                </div>
 
-                    <!-- Google Sign-In Button (rendered by Google) -->
-                    <div id="googleBtnContainer" style="display: flex; justify-content: center;"></div>
-                    <div id="googleError" style="color: #dc3545; text-align: center; margin-top: 8px; font-size: 0.85rem; display: none;"></div>
+                <div class="form-check mb-4">
+                    <input class="form-check-input" type="checkbox" id="remember">
+                    <label class="form-check-label small text-muted font-weight-500" for="remember">
+                        Remember me for 30 days
+                    </label>
                 </div>
-                
-                <div class="card-footer text-center">
-                    <p class="mb-0">
-                        Don't have an account?
-                        <a href="{% url 'users:signup' %}" class="font-weight-bold">Sign Up Here</a>
-                    </p>
-                </div>
+
+                <button type="submit" class="btn-auth">
+                    <i class="fas fa-sign-in-alt mr-2"></i> Sign In
+                </button>
+            </form>
+
+            <div class="divider">
+                <span>OR CONTINUE WITH</span>
+            </div>
+
+            <div class="google-btn-wrapper">
+                <div id="googleBtnContainer"></div>
+            </div>
+
+            <div class="auth-footer">
+                Don't have an account? <a href="{% url 'users:signup' %}">Sign Up Free</a>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Google Sign-In Script -->
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script>
     function waitForGoogle(cb) {
@@ -110,7 +328,7 @@
                 theme: 'outline',
                 size: 'large',
                 text: 'continue_with',
-                shape: 'rectangular',
+                shape: 'pill',
                 width: 350,
             }
         );
