@@ -1,0 +1,194 @@
+/* Profile Page Styles */
+
+.profile-header {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    padding: 40px;
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--spacing-2xl);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+}
+
+.profile-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    flex-shrink: 0;
+}
+
+.profile-info h2 {
+    color: white;
+    margin: 0 0 10px 0;
+}
+
+.profile-info p {
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0;
+}
+
+.profile-section {
+    background: white;
+    padding: var(--spacing-2xl);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.profile-section h3 {
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-lg);
+    border-bottom: 2px solid var(--gray-200);
+}
+
+/* My Cycles Section */
+.my-cycles-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+.cycle-owner-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-base);
+}
+
+.cycle-owner-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-4px);
+}
+
+.cycle-owner-image {
+    width: 100%;
+    height: 200px;
+    background: linear-gradient(135deg, var(--gray-200), var(--gray-300));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cycle-owner-body {
+    padding: var(--spacing-lg);
+}
+
+.cycle-owner-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: var(--spacing-sm);
+}
+
+.cycle-owner-info {
+    font-size: 0.9rem;
+    color: var(--gray-600);
+    margin-bottom: var(--spacing-md);
+}
+
+.cycle-owner-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-lg);
+}
+
+.cycle-owner-actions .btn {
+    flex: 1;
+}
+
+/* Complaint Page Styles */
+
+.complaint-form-section {
+    background: white;
+    padding: var(--spacing-2xl);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.complaint-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    margin-bottom: var(--spacing-lg);
+    border-left: 4px solid var(--gray-300);
+    transition: all var(--transition-base);
+}
+
+.complaint-card:hover {
+    box-shadow: var(--shadow-lg);
+}
+
+.complaint-card.high {
+    border-left-color: var(--danger);
+}
+
+.complaint-card.medium {
+    border-left-color: var(--warning);
+}
+
+.complaint-card.low {
+    border-left-color: var(--info);
+}
+
+.complaint-header {
+    padding: var(--spacing-lg);
+    background-color: var(--gray-50);
+}
+
+.complaint-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: var(--spacing-sm);
+}
+
+.complaint-ref {
+    font-size: 0.85rem;
+    color: var(--gray-600);
+}
+
+.complaint-body {
+    padding: var(--spacing-lg);
+}
+
+.complaint-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-lg);
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.complaint-status {
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+@media (max-width: 768px) {
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .my-cycles-header {
+        flex-direction: column;
+        gap: var(--spacing-lg);
+    }
+
+    .complaint-info {
+        grid-template-columns: 1fr;
+    }
+}

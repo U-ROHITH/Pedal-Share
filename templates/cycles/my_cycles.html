@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}My Listed Cycles - PedalShare{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <h2 class="font-weight-bold d-flex align-items-center" style="color: #34495E;">
+            <i class="fas fa-bicycle mr-3" style="color: #1ABC9C;"></i> My Listed Cycles
+        </h2>
+        <a href="{% url 'cycles:add' %}" class="btn btn-list-header">
+            <i class="fas fa-plus mr-2"></i> List a Cycle
+        </a>
+    </div>
+
+    {% if cycles %}
+        <div class="row">
+            {% for cycle in cycles %}
+                <div class="col-md-6 mb-4">
+                    <div class="cycle-list-card shadow-sm border p-3">
+                        <div class="d-flex align-items-center">
+                            <div class="cycle-thumb-small mr-4">
+                                {% if cycle.image %}
+                                    <img src="{{ cycle.image.url }}" alt="{{ cycle.title }}" class="img-fluid rounded">
+                                {% else %}
+                                    <div class="no-img-small bg-light rounded d-flex align-items-center justify-content-center">
+                                        <i class="fas fa-bicycle text-secondary opacity-50"></i>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <h5 class="font-weight-bold mb-1">{{ cycle.title }}</h5>
+                                    <span class="badge {% if cycle.is_available %}badge-success{% else %}badge-danger{% endif %} px-2">
+                                        {% if cycle.is_available %}Available{% else %}Booked{% endif %}
+                                    </span>
+                                </div>
+                                <p class="text-muted small mb-2"><i class="fas fa-map-marker-alt mr-1"></i> {{ cycle.location }}</p>
+                                <div class="text-primary font-weight-bold mb-3">₹{{ cycle.price_per_hour|floatformat:0 }}/hr</div>
+                                
+                                <div class="d-flex">
+                                    <a href="{% url 'cycles:edit' cycle.id %}" class="btn btn-sm btn-outline-secondary mr-2">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <form action="{% url 'cycles:toggle_availability' cycle.id %}" method="POST" class="mr-2">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm {% if cycle.is_available %}btn-warning{% else %}btn-success{% endif %}">
+                                            <i class="fas fa-power-off"></i>
+                                        </button>
+                                    </form>
+                                    <form action="{% url 'cycles:delete' cycle.id %}" method="POST">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete?')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state-container text-center py-5 mt-5">
+            <div class="mb-4">
+                <i class="fas fa-bicycle fa-8x" style="color: #e0e0e0; transform: rotate(-10deg);"></i>
+            </div>
+            <h3 class="font-weight-bold mb-2">No cycles listed yet</h3>
+            <p class="text-muted mb-5">List your cycle and start earning from fellow students!</p>
+            
+            <a href="{% url 'cycles:add' %}" class="btn btn-list-first btn-lg px-5 py-4">
+                <i class="fas fa-plus mr-3" style="font-size: 2rem;"></i>
+                <span class="h4 font-weight-bold mb-0">List Your First Cycle</span>
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    body {
+        background-color: #fff;
+    }
+    .btn-list-header {
+        background-color: #1ABC9C;
+        color: white;
+        border-radius: 8px;
+        font-weight: 600;
+        padding: 10px 24px;
+    }
+    .btn-list-header:hover {
+        background-color: #16A085;
+        color: white;
+    }
+    .btn-list-first {
+        background-color: #1ABC9C;
+        color: white;
+        border-radius: 12px;
+        display: inline-flex;
+        align-items: center;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-list-first:hover {
+        background-color: #16A085;
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(26, 188, 156, 0.2);
+    }
+    .cycle-list-card {
+        border-radius: 12px;
+        background: white;
+    }
+    .cycle-thumb-small {
+        width: 100px;
+        height: 100px;
+        flex-shrink: 0;
+    }
+    .cycle-thumb-small img, .no-img-small {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .no-img-small {
+        font-size: 2rem;
+    }
+</style>
+{% endblock %}

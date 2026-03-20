@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Checkout - PedalShare{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Booking Details -->
+        <div class="col-lg-8">
+            <div class="payment-section">
+                <div class="payment-header">
+                    <h2><i class="fas fa-shopping-cart mr-2 text-primary"></i>Checkout Summary</h2>
+                    <p class="text-muted">Confirm your booking details and proceed to payment.</p>
+                </div>
+
+                <div class="card mb-4 border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-4">
+                                {% if booking.cycle.image %}
+                                    <img src="{{ booking.cycle.image.url }}" alt="{{ booking.cycle.title }}" class="img-fluid rounded">
+                                {% else %}
+                                    <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 150px;">
+                                        <i class="fas fa-bicycle fa-3x text-secondary"></i>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-8">
+                                <h4 class="font-weight-bold">{{ booking.cycle.title }}</h4>
+                                <p class="text-muted mb-2"><i class="fas fa-map-marker-alt mr-2"></i>{{ booking.cycle.location }}</p>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <span class="text-muted d-block small">From</span>
+                                        <strong>{{ booking.start_time|date:"M d, Y h:i A" }}</strong>
+                                    </div>
+                                    <div class="col-6">
+                                        <span class="text-muted d-block small">To</span>
+                                        <strong>{{ booking.end_time|date:"M d, Y h:i A" }}</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checkout-summary mt-4">
+                    <div class="summary-row">
+                        <span>Rental Price (per hour)</span>
+                        <span>₹{{ booking.cycle.price_per_hour }}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Duration</span>
+                        <span>{{ booking.duration_hours }} hours</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Total Amount</span>
+                        <span>₹{{ booking.total_price }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Method -->
+        <div class="col-lg-4">
+            <div class="payment-section">
+                <div class="payment-header">
+                    <h4>Payment Method</h4>
+                </div>
+
+                <div class="wallet-status-card p-3 rounded mb-4 {% if can_pay_from_wallet %}bg-light border-success{% else %}bg-light border-danger{% endif %}" style="border: 2px solid;">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="font-weight-bold text-dark">Wallet Balance</span>
+                        <span class="badge {% if can_pay_from_wallet %}badge-success{% else %}badge-danger{% endif %} font-weight-bold p-2">
+                            ₹{{ profile.wallet_balance }}
+                        </span>
+                    </div>
+                    
+                    {% if not can_pay_from_wallet %}
+                        <div class="alert alert-danger py-2 px-3 small mb-0 mt-3">
+                            <i class="fas fa-exclamation-triangle mr-1"></i> Insufficient balance. You need ₹{{ booking.total_price|add:"-profile.wallet_balance"|default:booking.total_price }} more.
+                        </div>
+                    {% endif %}
+                </div>
+
+                {% if can_pay_from_wallet %}
+                    <form action="{% url 'payments:pay_with_wallet' booking.id %}" method="POST">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary btn-block btn-lg shadow-sm">
+                            <i class="fas fa-wallet mr-2"></i>Pay with Wallet
+                        </button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'payments:topup_wallet' %}" class="btn btn-warning btn-block btn-lg shadow-sm text-dark font-weight-bold">
+                        <i class="fas fa-plus-circle mr-2"></i>Add Money to Wallet
+                    </a>
+                {% endif %}
+
+                <div class="mt-4 text-center">
+                    <p class="small text-muted mb-0">
+                        <i class="fas fa-shield-alt mr-1"></i> Secure Payment Guaranteed
+                    </p>
+                    <div class="d-flex justify-content-center mt-2 opacity-50">
+                        <i class="fab fa-cc-visa fa-2x mx-2"></i>
+                        <i class="fab fa-cc-mastercard fa-2x mx-2"></i>
+                        <i class="fab fa-cc-amazon-pay fa-2x mx-2"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="payment-section mt-4 bg-light">
+                <h6>Need Help?</h6>
+                <p class="small text-muted mb-0">If you have any issues with your payment, please contact our support team.</p>
+                <a href="{% url 'pages:contactus' %}" class="btn btn-link btn-sm p-0 mt-2">Contact Support</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .payment-section {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        margin-bottom: 30px;
+    }
+    .payment-header {
+        margin-bottom: 25px;
+        border-bottom: 2px solid #f8f9fa;
+        padding-bottom: 15px;
+    }
+    .checkout-summary {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 12px;
+    }
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 12px;
+    }
+    .summary-row.total {
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 2px dashed #dee2e6;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #2575fc;
+    }
+    .btn-primary {
+        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        border: none;
+        padding: 12px;
+        border-radius: 10px;
+    }
+    .btn-warning {
+        background: linear-gradient(135deg, #fce38a 0%, #f38181 100%);
+        border: none;
+        color: white !important;
+    }
+</style>
+{% endblock %}

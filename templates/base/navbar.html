@@ -1,0 +1,82 @@
+<!-- Navigation Bar Include -->
+<nav class="navbar">
+    <div class="navbar-container">
+        <a href="{% url 'home' %}" class="navbar-brand">
+            <i class="fas fa-biking"></i>
+            <span>Pedal Share</span>
+        </a>
+        
+        <button class="navbar-toggle" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <div class="navbar-menu" id="navbarMenu">
+            {% if user.is_authenticated %}
+                <ul class="navbar-menu">
+                    <li class="navbar-item">
+                        <a href="{% url 'cycles:available' %}" class="navbar-link">
+                            <i class="fas fa-bicycle"></i> Browse Cycles
+                        </a>
+                    </li>
+                    <li class="navbar-item">
+                        <a href="{% url 'bookings:my_bookings' %}" class="navbar-link">
+                            <i class="fas fa-calendar"></i> My Bookings
+                        </a>
+                    </li>
+                    <li class="navbar-item">
+                        <a href="{% url 'cycles:my_cycles' %}" class="navbar-link">
+                            <i class="fas fa-user-circle"></i> My Cycles
+                        </a>
+                    </li>
+                    <li class="navbar-item">
+                        <a href="{% url 'payments:wallet' %}" class="navbar-link">
+                            <i class="fas fa-wallet"></i> Wallet
+                        </a>
+                    </li>
+                    
+                    <li class="navbar-item navbar-dropdown">
+                        <a href="#" class="navbar-link">
+                            <i class="fas fa-user"></i> {{ user.username }}
+                        </a>
+                        <div class="navbar-dropdown-menu">
+                            <a href="{% url 'users:profile' %}" class="navbar-dropdown-item">
+                                <i class="fas fa-user-cog"></i> Profile
+                            </a>
+                            <a href="{% url 'complaints:my_complaints' %}" class="navbar-dropdown-item">
+                                <i class="fas fa-exclamation-circle"></i> My Complaints
+                            </a>
+                            <div style="border-top: 1px solid #e5e7eb;"></div>
+                            <a href="{% url 'users:signout' %}" class="navbar-dropdown-item">
+                                <i class="fas fa-sign-out-alt"></i> Sign Out
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+            {% else %}
+                <ul class="navbar-menu">
+                    <li class="navbar-item">
+                        <a href="{% url 'cycles:available' %}" class="navbar-link">Browse Cycles</a>
+                    </li>
+                    <li class="navbar-item">
+                        <a href="#" class="navbar-link">About Us</a>
+                    </li>
+                    <li class="navbar-item">
+                        <a href="#" class="navbar-link">Help</a>
+                    </li>
+                </ul>
+                
+                <div class="auth-buttons">
+                    <a href="{% url 'users:signin' %}" class="navbar-btn navbar-btn-signin">Sign In</a>
+                    <a href="{% url 'users:signup' %}" class="navbar-btn navbar-btn-signup">Sign Up</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+
+<script>
+    function toggleMenu() {
+        const menu = document.getElementById('navbarMenu');
+        menu.classList.toggle('active');
+    }
+</script>
