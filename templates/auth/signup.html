@@ -1,0 +1,358 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Sign Up - Pedal Share{% endblock %}
+
+{% block content %}
+<style>
+    .split-container {
+        display: flex;
+        min-height: calc(100vh - 68px);
+        background-color: #fff;
+    }
+
+    .brand-side {
+        flex: 1;
+        background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        color: white;
+        padding: 80px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .brand-side::before {
+        content: '';
+        position: absolute;
+        top: -100px;
+        right: -100px;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(26, 188, 156, 0.1) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+
+    .brand-side::after {
+        content: '';
+        position: absolute;
+        bottom: -50px;
+        left: -50px;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(37, 117, 252, 0.1) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+
+    .brand-content {
+        position: relative;
+        z-index: 10;
+        max-width: 500px;
+    }
+
+    .brand-logo {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #1ABC9C;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .brand-title {
+        font-size: 3rem;
+        font-weight: 700;
+        line-height: 1.1;
+        margin-bottom: 1.5rem;
+    }
+
+    .brand-desc {
+        font-size: 1.1rem;
+        color: #94a3b8;
+        margin-bottom: 3rem;
+        line-height: 1.6;
+    }
+
+    .promo-badge {
+        display: inline-flex;
+        align-items: center;
+        background: rgba(26, 188, 156, 0.1);
+        border: 1px solid rgba(26, 188, 156, 0.2);
+        padding: 12px 20px;
+        border-radius: 12px;
+        margin-bottom: 3rem;
+    }
+
+    .promo-badge i { color: #1ABC9C; font-size: 1.5rem; margin-right: 15px; }
+    .promo-text h5 { color: #1ABC9C; margin: 0; font-size: 1.1rem; }
+    .promo-text p { color: #94a3b8; margin: 0; font-size: 0.85rem; }
+
+    .feature-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .feature-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.2rem;
+        font-weight: 500;
+        color: #cbd5e1;
+    }
+
+    .feature-icon {
+        color: #1ABC9C;
+        margin-right: 12px;
+    }
+
+    .form-side {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px;
+        background-color: #f8fafc;
+    }
+
+    .auth-card {
+        width: 100%;
+        max-width: 500px;
+        background: white;
+        padding: 40px 50px;
+        border-radius: 24px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.05);
+    }
+
+    .auth-header h2 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 10px;
+    }
+
+    .auth-header p {
+        color: #64748b;
+        margin-bottom: 30px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #475569;
+        margin-bottom: 8px;
+    }
+
+    .form-control {
+        height: 50px;
+        border-radius: 10px;
+        border: 1.5px solid #e2e8f0;
+        padding: 0 18px;
+        font-family: inherit;
+        transition: all 0.3s;
+    }
+
+    .form-control:focus {
+        border-color: #1ABC9C;
+        box-shadow: 0 0 0 4px rgba(26, 188, 156, 0.1);
+    }
+
+    .btn-auth {
+        height: 52px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 1rem;
+        background-color: #1e293b;
+        color: white;
+        border: none;
+        width: 100%;
+        margin-top: 20px;
+        transition: all 0.3s;
+    }
+
+    .btn-auth:hover {
+        background-color: #0f172a;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(15, 23, 42, 0.15);
+    }
+
+    .divider {
+        display: flex;
+        align-items: center;
+        margin: 25px 0;
+        color: #94a3b8;
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+
+    .divider::before, .divider::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background-color: #e2e8f0;
+    }
+
+    .divider span {
+        padding: 0 15px;
+    }
+
+    .google-btn-wrapper {
+        display: flex;
+        justify-content: center;
+    }
+
+    .auth-footer {
+        text-align: center;
+        margin-top: 25px;
+        color: #64748b;
+        font-size: 0.95rem;
+    }
+
+    .auth-footer a {
+        color: #1ABC9C;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    @media (max-width: 991px) {
+        .brand-side { display: none; }
+        .form-side { padding: 20px; background-color: white; }
+        .auth-card { box-shadow: none; padding: 20px; }
+        .split-container { min-height: calc(100vh - 60px); }
+    }
+</style>
+
+<div class="split-container">
+    <div class="brand-side">
+        <div class="brand-content">
+            <div class="brand-logo">
+                <i class="fas fa-bicycle mr-3"></i> PedalShare
+            </div>
+            <h1 class="brand-title">Join PedalShare today</h1>
+            <p class="brand-desc">Thousands of students are already saving money and riding sustainably on campus. Join the community now.</p>
+            
+            <div class="promo-badge">
+                <i class="fas fa-gift"></i>
+                <div class="promo-text">
+                    <h5>₹500 Free on Signup!</h5>
+                    <p>Instant wallet credit — no card needed</p>
+                </div>
+            </div>
+
+            <ul class="feature-list">
+                <li class="feature-item"><i class="fas fa-check-circle feature-icon"></i> Book your first ride in 60 seconds</li>
+                <li class="feature-item"><i class="fas fa-check-circle feature-icon"></i> 6+ verified cycles on campus</li>
+                <li class="feature-item"><i class="fas fa-check-circle feature-icon"></i> Rated 4.7★ by students</li>
+                <li class="feature-item"><i class="fas fa-check-circle feature-icon"></i> Secure & fully refundable</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="form-side">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h2>Create Account</h2>
+                <p>Fill in the details below — takes under a minute</p>
+            </div>
+
+            <form method="POST">
+                {% csrf_token %}
+                
+                <div class="row">
+                    <div class="col-12 mb-3">
+                        <label class="form-label">Username</label>
+                        {{ form.username }}
+                        {% if form.username.errors %}
+                            <div class="invalid-feedback">{{ form.username.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class="form-label">Email Address</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                        <div class="invalid-feedback">{{ form.email.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Password</label>
+                        {{ form.password1 }}
+                        {% if form.password1.errors %}
+                            <div class="invalid-feedback">{{ form.password1.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Confirm Password</label>
+                        {{ form.password2 }}
+                        {% if form.password2.errors %}
+                            <div class="invalid-feedback">{{ form.password2.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-check mb-4 mt-2">
+                    <input class="form-check-input" type="checkbox" id="terms" required>
+                    <label class="form-check-label small text-muted font-weight-500" for="terms">
+                        I agree to the <a href="#" class="text-primary">Terms of Service</a> & <a href="#" class="text-primary">Privacy Policy</a>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-auth">
+                    <i class="fas fa-user-plus mr-2"></i> Create Account & Get ₹500
+                </button>
+            </form>
+
+            <div class="divider">
+                <span>OR SIGN UP WITH</span>
+            </div>
+
+            <div class="google-btn-wrapper">
+                <div id="googleBtnContainer"></div>
+            </div>
+
+            <div class="auth-footer">
+                Already have an account? <a href="{% url 'users:signin' %}">Sign In here</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script>
+    function waitForGoogle(cb) {
+        if (typeof google !== 'undefined' && google.accounts) {
+            cb();
+        } else {
+            const interval = setInterval(function() {
+                if (typeof google !== 'undefined' && google.accounts) {
+                    clearInterval(interval);
+                    cb();
+                }
+            }, 200);
+        }
+    }
+
+    waitForGoogle(function() {
+        google.accounts.id.initialize({
+            client_id: '{{ GOOGLE_OAUTH_CLIENT_ID }}',
+            ux_mode: 'redirect',
+            login_uri: window.location.origin + '/auth/google-callback/',
+        });
+
+        google.accounts.id.renderButton(
+            document.getElementById('googleBtnContainer'),
+            {
+                type: 'standard',
+                theme: 'outline',
+                size: 'large',
+                text: 'signup_with',
+                shape: 'pill',
+                width: 350,
+            }
+        );
+    });
+</script>
+{% endblock %}

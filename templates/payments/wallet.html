@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Wallet - PedalShare{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row px-4">
+        <!-- Sidebar -->
+        <div class="col-md-2 dashboard-sidebar">
+            <h6 class="text-uppercase text-muted font-weight-bold mb-4" style="font-size: 12px; letter-spacing: 1px;">MY ACCOUNT</h6>
+            <nav class="nav flex-column sidebar-nav">
+                <a class="nav-link active" href="{% url 'payments:wallet' %}"><i class="fas fa-wallet mr-2"></i> Wallet</a>
+                <a class="nav-link" href="{% url 'bookings:my_bookings' %}"><i class="far fa-calendar-check mr-2"></i> My Bookings</a>
+                <a class="nav-link" href="{% url 'cycles:available' %}"><i class="fas fa-bicycle mr-2"></i> Book a Cycle</a>
+                <a class="nav-link text-danger mt-4" href="{% url 'users:signout' %}"><i class="fas fa-sign-out-alt mr-2"></i> Logout</a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-10 px-4">
+            <h4 class="mb-4"><i class="fas fa-wallet text-primary mr-2"></i> Wallet</h4>
+
+            <!-- Balance Card -->
+            <div class="card wallet-main-card mb-4">
+                <div class="card-body p-4 text-white">
+                    <p class="text-uppercase small font-weight-bold mb-2">AVAILABLE BALANCE</p>
+                    <h1 class="display-4 font-weight-bold mb-0">₹ {{ profile.wallet_balance|floatformat:2 }}</h1>
+                    <div class="wallet-card-icon">
+                        <i class="fas fa-wallet opacity-25" style="font-size: 80px;"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Money Section -->
+            <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px;">
+                <div class="card-body p-4">
+                    <h6 class="font-weight-bold mb-4"><i class="fas fa-plus-circle text-success mr-2"></i> Add Money</h6>
+                    
+                    <form action="{% url 'payments:topup_wallet' %}" method="POST">
+                        {% csrf_token %}
+                        <div class="amount-presets mb-3">
+                            <button type="button" class="btn btn-preset" onclick="setAmount(100)">₹100</button>
+                            <button type="button" class="btn btn-preset" onclick="setAmount(200)">₹200</button>
+                            <button type="button" class="btn btn-preset" onclick="setAmount(500)">₹500</button>
+                            <button type="button" class="btn btn-preset" onclick="setAmount(1000)">₹1000</button>
+                            <button type="button" class="btn btn-preset" onclick="setAmount(2000)">₹2000</button>
+                        </div>
+                        
+                        <div class="form-group mb-0">
+                            <label class="small text-muted font-weight-bold">Enter Amount (₹)</label>
+                            <div class="input-group">
+                                <input type="number" name="custom_amount" id="amount_input" class="form-control" placeholder="e.g. 500" min="10" required style="border-radius: 10px 0 0 10px; padding: 25px 20px;">
+                                <input type="hidden" name="amount_preset" value="custom">
+                                <div class="input-group-append">
+                                    <button class="btn btn-success px-4 font-weight-bold" type="submit" style="border-radius: 0 10px 10px 0;">
+                                        <i class="fas fa-plus mr-2"></i> Add to Wallet
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Recent Transactions -->
+            <div class="card border-0 shadow-sm" style="border-radius: 15px;">
+                <div class="card-body p-4">
+                    <h6 class="font-weight-bold mb-4"><i class="fas fa-history text-primary mr-2"></i> Recent Transactions</h6>
+                    
+                    <div class="transaction-list">
+                        {% for transaction in transactions %}
+                            <div class="transaction-item d-flex align-items-center justify-content-between py-3 border-bottom">
+                                <div class="d-flex align-items-center">
+                                    <div class="transaction-icon-circle mr-3 {% if transaction.amount > 0 %}bg-success-light text-success{% else %}bg-danger-light text-danger{% endif %}">
+                                        <i class="fas {% if transaction.amount > 0 %}fa-arrow-up{% else %}fa-arrow-down{% endif %}"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-weight-bold mb-0" style="font-size: 14px;">{{ transaction.description|default:transaction.get_transaction_type_display }}</p>
+                                        <p class="small text-muted mb-0">{{ transaction.created_at|date:"d M Y, g:i A" }}</p>
+                                    </div>
+                                </div>
+                                <div class="font-weight-bold {% if transaction.amount > 0 %}text-success{% else %}text-danger{% endif %}">
+                                    {% if transaction.amount > 0 %}+{% endif %}₹{{ transaction.amount|floatformat:2 }}
+                                </div>
+                            </div>
+                        {% empty %}
+                            <div class="text-center py-4 text-muted">
+                                <i class="fas fa-exchange-alt fa-2x mb-2 opacity-25"></i>
+                                <p>No recent transactions</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .dashboard-sidebar {
+        border-right: 1px solid #e0e0e0;
+        min-height: 80vh;
+    }
+    .sidebar-nav .nav-link {
+        color: #444;
+        font-weight: 500;
+        padding: 12px 15px;
+        border-radius: 10px;
+        margin-bottom: 5px;
+        font-size: 14px;
+    }
+    .sidebar-nav .nav-link:hover {
+        background-color: #f0f4f8;
+        color: #2575fc;
+    }
+    .sidebar-nav .nav-link.active {
+        background-color: #e6f0ff;
+        color: #2575fc;
+        font-weight: 700;
+    }
+    .wallet-main-card {
+        background: linear-gradient(135deg, #2575fc 0%, #1a4fb8 100%);
+        border-radius: 20px;
+        border: none;
+        overflow: hidden;
+        position: relative;
+    }
+    .wallet-card-icon {
+        position: absolute;
+        bottom: -20px;
+        right: -10px;
+    }
+    .btn-preset {
+        background: white;
+        border: 1px solid #e0e0e0;
+        border-radius: 20px;
+        padding: 5px 20px;
+        margin-right: 8px;
+        font-weight: 600;
+        color: #2575fc;
+        font-size: 13px;
+    }
+    .btn-preset:hover {
+        background: #2575fc;
+        color: white;
+    }
+    .transaction-icon-circle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+    }
+    .bg-success-light { background: #e6ffed; }
+    .bg-danger-light { background: #fee2e2; }
+    .transaction-item:last-child { border-bottom: none !important; }
+</style>
+
+<script>
+    function setAmount(val) {
+        document.getElementById('amount_input').value = val;
+    }
+</script>
+{% endblock %}

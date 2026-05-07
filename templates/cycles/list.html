@@ -1,0 +1,440 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Available Cycles - PedalShare{% endblock %}
+
+{% block content %}
+<style>
+  /* ── Page Header Banner ── */
+  .page-header {
+    background: linear-gradient(135deg, #34495E, #2575fc);
+    color: #fff;
+    padding: 50px 40px;
+    text-align: center;
+  }
+
+  .page-header h1 {
+    font-size: 2.4rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+  }
+
+  .page-header p {
+    font-size: 1rem;
+    opacity: 0.85;
+  }
+
+  /* ── Filter Section ── */
+  .filter-section {
+    background: #fff;
+    padding: 20px 40px;
+    border-bottom: 1px solid #e0e0e0;
+    margin-bottom: 0;
+  }
+
+  .filter-form {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: flex-end;
+  }
+
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .filter-group label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #34495E;
+  }
+
+  .filter-input {
+    padding: 8px 12px;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .btn-filter {
+    background: #1ABC9C;
+    color: #fff;
+    border: none;
+    padding: 9px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .btn-filter:hover { background: #16A085; }
+
+  .btn-reset {
+    background: #f0f4ff;
+    color: #2575fc;
+    border: 1.5px solid #d0d8f0;
+    padding: 8px 16px;
+    border-radius: 8px;
+    text-decoration: none !important;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  /* ── Cycles Grid ── */
+  .cycles-section {
+    padding: 50px 40px;
+    background-color: #f3f3f5;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .cycles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 28px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* ── Cycle Card ── */
+  .cycle-card {
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .cycle-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 16px 36px rgba(0,0,0,0.13);
+  }
+
+  .cycle-card.unavailable { opacity: 0.75; }
+  .cycle-card.unavailable:hover { transform: none; }
+
+  /* Image area */
+  .cycle-img-wrapper {
+    width: 100%;
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    background: #34495E;
+  }
+
+  .cycle-img-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: rgba(255,255,255,0.85);
+  }
+
+  .cycle-img-placeholder i { font-size: 3.5rem; margin-bottom: 8px; }
+  .cycle-img-placeholder span { font-size: 0.88rem; letter-spacing: 0.5px; font-weight: 600; }
+
+  .cycle-main-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Type badge on image */
+  .type-badge {
+    position: absolute;
+    top: 12px; left: 12px;
+    background: rgba(0,0,0,0.45);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    backdrop-filter: blur(4px);
+  }
+
+  .status-chip {
+    position: absolute;
+    top: 12px; right: 12px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  .status-chip.available  { background: #1ABC9C; color: #fff; }
+  .status-chip.unavailable { background: #e74c3c; color: #fff; }
+
+  /* Card Body */
+  .cycle-card-body { padding: 20px; }
+
+  .cycle-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #34495E;
+    margin-bottom: 4px;
+  }
+
+  .cycle-price {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #2575fc;
+    margin-bottom: 14px;
+  }
+
+  .cycle-price span { font-size: 0.8rem; color: #95a5a6; font-weight: 400; }
+
+  .owner-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .owner-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: #1ABC9C;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .owner-avatar i { color: #fff; font-size: 0.95rem; }
+
+  .owner-info h4 { font-size: 0.9rem; font-weight: 600; color: #34495E; margin: 0; }
+  .owner-info span { font-size: 0.75rem; color: #95a5a6; }
+
+  .cycle-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.83rem;
+    color: #5a6a7a;
+    margin-bottom: 7px;
+  }
+
+  .cycle-meta i { color: #1ABC9C; width: 14px; }
+
+  .rating-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 16px;
+    font-size: 0.83rem;
+    color: #5a6a7a;
+  }
+
+  .stars { color: #f39c12; }
+
+  /* Actions */
+  .cycle-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+  }
+
+
+  .btn-book {
+    flex: 1;
+    background: linear-gradient(135deg, #34495E, #2575fc);
+    color: #fff !important;
+    text-decoration: none !important;
+    padding: 11px;
+    text-align: center;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border: none;
+    box-shadow: 0 4px 14px rgba(37,117,252,0.22);
+  }
+
+  .btn-book:hover { box-shadow: 0 6px 20px rgba(37,117,252,0.38); }
+
+  .btn-unavail {
+    flex: 1;
+    background: #f5f5f5;
+    color: #aaa;
+    border: none;
+    padding: 11px;
+    text-align: center;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: not-allowed;
+  }
+
+  /* Flash messages */
+  .flash-wrap { max-width: 1100px; margin: 20px auto 0; padding: 0 40px; }
+  .msg-banner {
+    padding: 11px 16px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    font-size: 0.88rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .msg-error   { background:#fef0f0; border-left:4px solid #e74c3c; color:#c0392b; }
+  .msg-success { background:#eafaf1; border-left:4px solid #1ABC9C; color:#1e8449; }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .cycle-card { animation: fadeInUp 0.5s ease-out both; }
+
+  @media (max-width: 768px) {
+    .cycles-section { padding: 30px 16px; }
+    .page-header { padding: 36px 20px; }
+    .page-header h1 { font-size: 1.7rem; }
+    .filter-form { flex-direction: column; align-items: stretch; }
+  }
+</style>
+
+<!-- Page Header -->
+<div class="page-header">
+  <h1><i class="fas fa-bicycle" style="margin-right:10px;"></i>Available Cycles</h1>
+  <p>Pick a cycle and book your journey instantly.</p>
+</div>
+
+<!-- Filter Section -->
+<div class="filter-section">
+  <form method="GET" class="filter-form">
+    <div class="filter-group">
+      <label>Cycle Type</label>
+      <select name="cycle_type" class="filter-input">
+        <option value="">All Types</option>
+        {% for value, label in form.fields.cycle_type.choices %}
+          {% if value %}
+            <option value="{{ value }}" {% if request.GET.cycle_type == value %}selected{% endif %}>{{ label }}</option>
+          {% endif %}
+        {% endfor %}
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>Location</label>
+      <input type="text" name="location" class="filter-input" placeholder="Search location..." value="{{ request.GET.location }}">
+    </div>
+    <div class="filter-group">
+      <label>Max Price</label>
+      <input type="number" name="max_price" class="filter-input" placeholder="₹/hr" value="{{ request.GET.max_price }}">
+    </div>
+    <div style="display:flex; gap:10px; margin-top:5px;">
+      <button type="submit" class="btn-filter">
+        <i class="fas fa-search" style="margin-right:8px;"></i>Filter
+      </button>
+      <a href="{% url 'cycles:available' %}" class="btn-reset">Reset</a>
+    </div>
+  </form>
+</div>
+
+<!-- Flash Messages -->
+{% if messages %}
+  <div class="flash-wrap">
+    {% for message in messages %}
+      <div class="msg-banner {% if message.tags == 'error' %}msg-error{% else %}msg-success{% endif %}">
+        <i class="fas fa-{% if message.tags == 'error' %}exclamation-circle{% else %}check-circle{% endif %}"></i>
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<!-- Cycles Grid -->
+<div class="cycles-section">
+  <div class="cycles-grid">
+    {% for cycle in cycles %}
+    <div class="cycle-card {% if not cycle.is_available %}unavailable{% endif %}" style="animation-delay: {{ forloop.counter0 }}00ms;">
+      <!-- Image Wrapper -->
+      <div class="cycle-img-wrapper">
+        {% if cycle.image %}
+          <img src="{{ cycle.image.url }}" class="cycle-main-img" alt="{{ cycle.title }}">
+        {% else %}
+          <div class="cycle-img-placeholder">
+            <i class="fas fa-bicycle"></i>
+            <span>{{ cycle.title }}</span>
+          </div>
+        {% endif %}
+        <span class="type-badge">{{ cycle.get_cycle_type_display }}</span>
+        <span class="status-chip {% if cycle.is_available %}available{% else %}unavailable{% endif %}">
+          {% if cycle.is_available %}Available{% else %}Booked{% endif %}
+        </span>
+      </div>
+
+      <div class="cycle-card-body">
+        <div class="cycle-title">{{ cycle.title }}</div>
+        <div class="cycle-price">₹{{ cycle.price_per_hour|floatformat:0 }} <span>/ hour</span></div>
+
+        <div class="owner-row">
+          <div class="owner-avatar">
+            <i class="fas fa-user"></i>
+          </div>
+          <div class="owner-info">
+            <h4>{{ cycle.owner.username }}</h4>
+            <span>Verified Owner</span>
+          </div>
+        </div>
+
+        <div class="cycle-meta">
+          <i class="fas fa-clock"></i>
+          {{ cycle.available_from|time:"g A" }} – {{ cycle.available_until|time:"g A" }}
+        </div>
+        <div class="cycle-meta">
+          <i class="fas fa-map-marker-alt"></i>
+          {{ cycle.location }}
+        </div>
+        <div class="cycle-meta">
+          <i class="fas fa-palette"></i>
+          {{ cycle.color }}
+        </div>
+
+        <div class="rating-row">
+          <span class="stars">
+            {% for i in "12345" %}
+              {% if forloop.counter <= cycle.rating %}
+                <i class="fas fa-star"></i>
+              {% else %}
+                <i class="far fa-star"></i>
+              {% endif %}
+            {% endfor %}
+          </span>
+          {{ cycle.rating }} • {{ cycle.total_bookings }} bookings
+        </div>
+
+        <div class="cycle-actions">
+          {% if user.is_authenticated and cycle.is_available %}
+            <a href="{% url 'bookings:book' cycle.id %}" class="btn-book">
+              <i class="fas fa-calendar-check" style="margin-right:6px;"></i>Book Now
+            </a>
+          {% elif not user.is_authenticated and cycle.is_available %}
+            <a href="{% url 'users:signin' %}?next={% url 'cycles:available' %}" class="btn-book">
+              <i class="fas fa-sign-in-alt" style="margin-right:6px;"></i>Sign In to Book
+            </a>
+          {% else %}
+            <button class="btn-unavail" disabled>
+              <i class="fas fa-times-circle" style="margin-right:6px;"></i>Booked
+            </button>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% empty %}
+      <div style="text-align:center; color:#aaa; grid-column:1/-1; padding:60px 0;">
+        <i class="fas fa-search" style="font-size:3rem; margin-bottom:15px; display:block;"></i>
+        <p>No cycles available right now. Check back soon!</p>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

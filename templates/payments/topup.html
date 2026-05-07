@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Top-up Wallet - PedalShare{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="payment-section">
+                <div class="payment-header text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-wallet fa-3x text-primary"></i>
+                    </div>
+                    <h2>Top-up Your Wallet</h2>
+                    <p class="text-muted">Add credits to your account for hassle-free bookings.</p>
+                </div>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="POST" id="topup-form">
+                    {% csrf_token %}
+                    
+                    <label class="font-weight-bold mb-3 d-block">Select Amount</label>
+                    <div class="amount-presets mb-4">
+                        {% for value, label in form.fields.amount_preset.choices %}
+                            <div class="amount-option">
+                                <input type="radio" name="amount_preset" value="{{ value }}" id="preset_{{ value }}" 
+                                       class="d-none" {% if forloop.first %}checked{% endif %}>
+                                <label for="preset_{{ value }}" class="amount-preset-btn w-100 mb-0">
+                                    {{ label }}
+                                </label>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <div id="custom-amount-wrapper" class="mb-4 d-none">
+                        <label for="{{ form.custom_amount.id_for_label }}" class="font-weight-bold">Custom Amount (₹)</label>
+                        {{ form.custom_amount }}
+                        <small class="text-muted">Minimum amount is ₹10</small>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block btn-lg mt-2">
+                        Proceed to Payment
+                    </button>
+                </form>
+
+                <div class="mt-4 pt-4 border-top text-center">
+                    <div class="d-flex justify-content-center align-items-center text-muted small">
+                        <i class="fas fa-lock mr-2"></i> 256-bit Secure Encryption
+                        <span class="mx-3">|</span>
+                        <i class="fas fa-check-circle mr-2"></i> Instant Credits
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-3">
+                <a href="{% url 'payments:wallet' %}" class="text-muted small text-decoration-none">
+                    <i class="fas fa-arrow-left mr-1"></i> Back to Wallet
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .payment-section {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+    
+    .amount-presets {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+    }
+    
+    .amount-preset-btn {
+        padding: 15px 10px;
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-weight: 600;
+        color: #495057;
+    }
+    
+    input[type="radio"]:checked + .amount-preset-btn {
+        border-color: #2575fc;
+        background-color: rgba(37, 117, 252, 0.05);
+        color: #2575fc;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(37, 117, 252, 0.15);
+    }
+    
+    .amount-preset-btn:hover {
+        border-color: #2575fc;
+        color: #2575fc;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        border: none;
+        padding: 15px;
+        border-radius: 12px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(106, 17, 203, 0.3);
+    }
+    
+    .form-control {
+        border-radius: 10px;
+        padding: 12px 15px;
+        border: 2px solid #e9ecef;
+    }
+    
+    .form-control:focus {
+        border-color: #2575fc;
+        box-shadow: none;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const radioBtns = document.querySelectorAll('input[name="amount_preset"]');
+        const customWrapper = document.getElementById('custom-amount-wrapper');
+        const customInput = document.querySelector('input[name="custom_amount"]');
+        
+        function toggleCustomInput() {
+            const selected = document.querySelector('input[name="amount_preset"]:checked').value;
+            if (selected === 'custom') {
+                customWrapper.classList.remove('d-none');
+                customInput.setAttribute('required', 'required');
+            } else {
+                customWrapper.classList.add('d-none');
+                customInput.removeAttribute('required');
+            }
+        }
+        
+        radioBtns.forEach(btn => {
+            btn.addEventListener('change', toggleCustomInput);
+        });
+        
+        // Initial check
+        toggleCustomInput();
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Secure Payment - PedalShare{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-5">
+            <div class="payment-gateway-card">
+                <div class="card-top-accent"></div>
+                
+                <div class="p-4 p-md-5">
+                    <div class="text-center mb-4">
+                        <div class="merchant-logo mb-3">
+                            <i class="fas fa-bicycle text-primary"></i>
+                            <span class="ml-2 font-weight-bold h4 mb-0">PedalShare</span>
+                        </div>
+                        <div class="payment-timer" id="timer">01:59</div>
+                        <p class="text-muted small">Please complete your payment within the time limit</p>
+                    </div>
+
+                    <div class="order-summary mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="text-muted">Transaction ID:</span>
+                            <span class="font-weight-bold">#{{ transaction.id }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-muted">Amount to Pay:</span>
+                            <span class="payment-amount text-primary">₹{{ amount }}</span>
+                        </div>
+                    </div>
+
+                    <div class="simulation-alert mb-4">
+                        <div class="d-flex">
+                            <i class="fas fa-info-circle mt-1 mr-3"></i>
+                            <div>
+                                <h6 class="mb-1">Payment Simulation</h6>
+                                <p class="small mb-0">This is a sandbox environment. Click the button below to simulate a successful payment processing.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form action="{% url 'payments:process_payment' transaction.id %}" method="POST" id="payment-gate-form">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-payment-gateway btn-block mb-3" id="pay-btn">
+                            <span id="btn-text">Pay Securely ₹{{ amount }}</span>
+                        </button>
+                    </form>
+
+                    <div class="text-center">
+                        <a href="{% url 'payments:wallet' %}" class="btn btn-link btn-sm text-muted">Cancel Payment</a>
+                    </div>
+
+                    <div class="payment-logos mt-4 pt-4 border-top">
+                        <div class="d-flex justify-content-center align-items-center grayscale opacity-50">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" height="15" class="mx-2">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" height="20" class="mx-2">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" height="18" class="mx-2">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Apple_Pay_logo.svg" height="20" class="mx-2">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .payment-gateway-card {
+        background: white;
+        border-radius: 24px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+        overflow: hidden;
+        border: none;
+        position: relative;
+    }
+
+    .card-top-accent {
+        height: 6px;
+        background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+        width: 100%;
+    }
+
+    .merchant-logo {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #2D3436;
+    }
+
+    .merchant-logo i {
+        font-size: 24px;
+        background: rgba(37, 117, 252, 0.1);
+        width: 45px;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+    }
+
+    .payment-timer {
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #2D3436;
+        margin-top: 15px;
+    }
+
+    .order-summary {
+        background: #F8F9FA;
+        padding: 20px;
+        border-radius: 16px;
+    }
+
+    .payment-amount {
+        font-size: 1.5rem;
+        font-weight: 800;
+    }
+
+    .simulation-alert {
+        background: rgba(37, 117, 252, 0.05);
+        border-left: 4px solid #2575fc;
+        padding: 15px;
+        border-radius: 4px 12px 12px 4px;
+        color: #2D3436;
+    }
+
+    .btn-payment-gateway {
+        background: #2D3436;
+        color: white;
+        padding: 16px;
+        border-radius: 14px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        border: none;
+    }
+
+    .btn-payment-gateway:hover {
+        background: #000;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        color: white;
+    }
+
+    .btn-payment-gateway:active {
+        transform: translateY(0);
+    }
+
+    .grayscale {
+        filter: grayscale(100%);
+    }
+
+    /* Processing animation */
+    .processing {
+        position: relative;
+        pointer-events: none;
+        opacity: 0.8;
+    }
+    
+    .spinner-border {
+        width: 1.5rem;
+        height: 1.5rem;
+        margin-right: 10px;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Simple timer logic
+        let timeLeft = 119; // 1:59
+        const timerElement = document.getElementById('timer');
+        
+        const countdown = setInterval(() => {
+            if (timeLeft <= 0) {
+                clearInterval(countdown);
+                timerElement.innerText = "00:00";
+                alert("Session expired. Please try again.");
+                window.location.href = "{% url 'payments:topup_wallet' %}";
+            } else {
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+                timerElement.innerText = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                timeLeft--;
+            }
+        }, 1000);
+
+        // Form processing simulation
+        const form = document.getElementById('payment-gate-form');
+        const payBtn = document.getElementById('pay-btn');
+        const btnText = document.getElementById('btn-text');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            payBtn.classList.add('processing');
+            btnText.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
+            
+            // Simulate processing delay
+            setTimeout(() => {
+                form.submit();
+            }, 2000);
+        });
+    });
+</script>
+{% endblock %}
